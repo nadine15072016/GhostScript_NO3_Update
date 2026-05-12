@@ -1020,14 +1020,26 @@ tfoot td {
                 
                 // Reload dataStore dari storage desa baru
                 const newData = localStorage.getItem(getStorageKey('padiSawahData'));
-                window.dataStore = newData ? JSON.parse(newData) : {};
+                dataStore = newData ? JSON.parse(newData) : {};
+                window.dataStore = dataStore;
                 
-                // Re-render tanpa reload halaman
+                // Update nama pengguna dan header
+                if (typeof updateNamaPenggunaDisplay === 'function') updateNamaPenggunaDisplay();
+                
+                // Clear filters untuk memastikan data muncul
+                const monthSel = document.getElementById('filterMonthSelect');
+                const yearSel = document.getElementById('filterYearSelect');
+                if (monthSel) monthSel.value = '';
+                if (yearSel) yearSel.value = '';
+                
+                // Re-render dalam urutan yang benar
+                if (typeof populateFilters === 'function') populateFilters();
+                if (typeof populateDesaSelector === 'function') populateDesaSelector();
                 if (typeof renderTable === 'function') renderTable();
                 if (typeof updateStats === 'function') updateStats();
-                if (typeof populateFilters === 'function') populateFilters();
+                if (typeof initTopTargetMenu === 'function') initTopTargetMenu();
                 
-                showToast(`✅ Switch ke desa "${nama}" (instant, tanpa reload)`, 'success');
+                showToast(`✅ Desa "${nama}" dimuat (data muncul otomatis)`, 'success');
                 console.log(`[switchDesaInstant] Berhasil switch ke desa: ${nama}`);
             } catch (err) {
                 showToast(`❌ Error switch desa: ${err.message}`, 'error');
@@ -1114,9 +1126,16 @@ tfoot td {
             const allDesa = getAllDesa();
             const currentDesa = getCurrentDesa();
             selector.innerHTML = allDesa.map(desa => `<option value="${desa}" ${currentDesa === desa ? 'selected' : ''}>${desa}</option>`).join('');
-            selector.onchange = function() {
-                switchDesa(this.value);
-            };
+            
+            // Remove previous event listener to prevent duplicate listeners
+            selector.onchange = null;
+            
+            // Add new event listener
+            selector.addEventListener('change', function(e) {
+                if (this.value && this.value !== currentDesa) {
+                    switchDesa(this.value);
+                }
+            }, { once: false });
             
             // Update header dengan nama desa
             const header = document.getElementById('desaNamaHeader');
@@ -1945,23 +1964,6 @@ document.addEventListener('DOMContentLoaded', function(){
                     populateFilters();
                     updateStats();
                     renderTable();
-                        // Kirim data baris ke Google Sheets setelah simpan dari form
-                        // Buat elemen <tr> sementara untuk dikirim
-                        const tr = document.createElement('tr');
-                        tr.innerHTML = `
-                            <td>${tanggal}</td>
-                            <td>${luasPanen}</td>
-                            <td>${calculatePredictions(tanggal).luasPanen}</td>
-                            <td>${lahanBera}</td>
-                            <td>${calculatePredictions(tanggal).lahanBera}</td>
-                            <td>${lahanOlahTanah}</td>
-                            <td>${calculatePredictions(tanggal).lahanOlahTanah}</td>
-                            <td>${luasTambahTanam}</td>
-                            <td>${calculatePredictions(tanggal).luasTambahTanam}</td>
-                            <td>${gagalPanen ? 'Gagal Panen' : tundaTanam ? 'Tunda Tanam' : ''}</td>
-                            <td></td>
-                        `;
-                        sendRowToGoogleSheets(tr);
                 }
         // Toast notification function (moved to top for global access)
         function showToast(message, type = 'success', duration = 2500) {
@@ -2133,7 +2135,7 @@ document.addEventListener('DOMContentLoaded', function(){
                 
                 // Simpan auto-backup ke localStorage
                 localStorage.setItem(autoBackupKey, JSON.stringify(data));
-                console.log(`[autoBackup] Auto-backup desa \"${desa}\" berhasil disimpan`);
+                console.log(`[autoBackup] Auto-backup desa "${desa}" berhasil disimpan`);
                 
             } catch (err) {
                 console.error('[autoBackup] Error:', err);
@@ -2159,6 +2161,55 @@ document.addEventListener('DOMContentLoaded', function(){
         }
         // ===== END AUTO-BACKUP FUNCTIONS =====
 
+        // ===== UNDO/REDO INITIALIZATION =====
+        function updateUndoRedoStatus() {
+            const status = document.getElementById('undoRedoStatus');
+            if (status) status.textContent = `Undo: ${undoStack.length} | Redo: ${redoStack.length}`;
+        }
+        
+        function initUndoRedoListeners() {
+            const undoBtn = document.getElementById('undoBtn');
+            const redoBtn = document.getElementById('redoBtn');
+            
+            // Remove old listeners if any
+            if (undoBtn && undoBtn.__undoListener) {
+                undoBtn.removeEventListener('click', undoBtn.__undoListener);
+            }
+            if (redoBtn && redoBtn.__redoListener) {
+                redoBtn.removeEventListener('click', redoBtn.__redoListener);
+            }
+            
+            // Add new listeners (hanya 1x)
+            if (undoBtn) {
+                undoBtn.__undoListener = function() {
+                    if (undoStack.length === 0) return;
+                    redoStack.push(JSON.stringify(dataStore));
+                    dataStore = JSON.parse(undoStack.pop());
+                    window.dataStore = dataStore;
+                    localStorage.setItem((getStorageKey('padiSawahData')), JSON.stringify(dataStore));
+                    renderTable();
+                    updateStats();
+                    showToast('Undo perubahan data.', 'success');
+                };
+                undoBtn.addEventListener('click', undoBtn.__undoListener);
+            }
+            
+            if (redoBtn) {
+                redoBtn.__redoListener = function() {
+                    if (redoStack.length === 0) return;
+                    undoStack.push(JSON.stringify(dataStore));
+                    dataStore = JSON.parse(redoStack.pop());
+                    window.dataStore = dataStore;
+                    localStorage.setItem((getStorageKey('padiSawahData')), JSON.stringify(dataStore));
+                    renderTable();
+                    updateStats();
+                    showToast('Redo perubahan data.', 'success');
+                };
+                redoBtn.addEventListener('click', redoBtn.__redoListener);
+            }
+        }
+        // ===== END UNDO/REDO INITIALIZATION =====
+
         // Set tanggal hari ini sebagai default
         // Tidak membatasi tanggal, biarkan user memilih tanggal apapun
         // Set default value ke tanggal hari ini
@@ -2175,6 +2226,7 @@ document.addEventListener('DOMContentLoaded', function(){
             populateDesaSelector();
             populateFilters();
             initTopTargetMenu();
+            initUndoRedoListeners();  // Initialize undo/redo listeners SEKALI SAJA
             renderTable();
             updateStats();
             setShowAllButtonLabel();
@@ -2455,7 +2507,6 @@ document.addEventListener('DOMContentLoaded', function(){
                 calculatePredictions(tanggal).luasTambahTanam,
                 gagalPanen ? 'Gagal Panen' : tundaTanam ? 'Tunda Tanam' : ''
             ];
-                sendRowToGoogleSheets(rowData);
                 resetForm();
                 populateFilters();
                 updateStats();
@@ -2505,15 +2556,16 @@ document.addEventListener('DOMContentLoaded', function(){
         }
 
         function clearAllData() {
-            if (confirm('Apakah Anda yakin ingin menghapus SEMUA data? Tindakan ini tidak dapat dibatalkan!')) {
-                if (confirm('Konfirmasi sekali lagi: Hapus semua data?')) {
+            const desa = getCurrentDesa();
+            if (confirm(`🗑️ Apakah Anda yakin ingin menghapus SEMUA data dari desa "${desa}"?\n\nTindakan ini TIDAK DAPAT DIBATALKAN dan akan menghapus seluruh riwayat data padi sawah.`)) {
+                if (confirm(`⚠️ Konfirmasi sekali lagi:\n\nHapus semua data desa "${desa}"?\n\nJangan lupa lakukan backup terlebih dahulu!`)) {
                     dataStore = {};
                     window.dataStore = dataStore;
                     localStorage.setItem((getStorageKey('padiSawahData')), JSON.stringify(dataStore));
                     populateFilters();
                     renderTable();
                     updateStats();
-                    showToast('Semua data berhasil dihapus!', 'success');
+                    showToast(`✅ Semua data desa "${desa}" berhasil dihapus!`, 'success');
                 } else {
                     showToast('Batal menghapus semua data.', 'warning');
                 }
@@ -2797,33 +2849,11 @@ document.addEventListener('DOMContentLoaded', function(){
                     `;
                     document.head.appendChild(style);
                 });
-                // Undo/Redo logic
+                // Undo/Redo logic - HANYA UPDATE STATUS, LISTENERS SUDAH DI-SETUP DI INIT
                 function updateUndoRedoStatus() {
                     const status = document.getElementById('undoRedoStatus');
                     if (status) status.textContent = `Undo: ${undoStack.length} | Redo: ${redoStack.length}`;
                 }
-                document.getElementById('undoBtn').addEventListener('click', function() {
-                    if (undoStack.length === 0) return;
-                    redoStack.push(JSON.stringify(dataStore));
-                    dataStore = JSON.parse(undoStack.pop());
-                    window.dataStore = dataStore;
-                    localStorage.setItem((getStorageKey('padiSawahData')), JSON.stringify(dataStore));
-                    renderTable();
-                    updateStats();
-                    showToast('Undo perubahan data.', 'success');
-                    updateUndoRedoStatus();
-                });
-                document.getElementById('redoBtn').addEventListener('click', function() {
-                    if (redoStack.length === 0) return;
-                    undoStack.push(JSON.stringify(dataStore));
-                    dataStore = JSON.parse(redoStack.pop());
-                    window.dataStore = dataStore;
-                    localStorage.setItem((getStorageKey('padiSawahData')), JSON.stringify(dataStore));
-                    renderTable();
-                    updateStats();
-                    showToast('Redo perubahan data.', 'success');
-                    updateUndoRedoStatus();
-                });
                 updateUndoRedoStatus();
             });
             updatePrintInfo();
@@ -3450,18 +3480,51 @@ document.addEventListener('DOMContentLoaded', function(){
 
     // Fungsi untuk mengirim data baris ke Google Sheets via Apps Script Web Apps
     function sendRowToGoogleSheets(rowData) {
-        // rowData: array data sesuai urutan kolom
+        if (!rowData || !Array.isArray(rowData)) return;
+        const dataStr = JSON.stringify(rowData);
+        showToast('Mengirim data ke Google Sheet...', 'info');
+        console.log('[GoogleSheets] Mengirim data:', dataStr);
+
+        // Gunakan redirect: 'follow' dan no-cors agar kompatibel dengan Apps Script
+        // Kirim sebagai FormData untuk menghindari preflight OPTIONS request
+        const formData = new FormData();
+        formData.append('data', dataStr);
+
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000);
+
         fetch(GOOGLE_APPS_SCRIPT_URL, {
             method: 'POST',
-            body: JSON.stringify(rowData),
-            headers: { 'Content-Type': 'application/json' }
+            body: formData,
+            redirect: 'follow',
+            signal: controller.signal
         })
-        .then(res => res.text())
+        .then(response => {
+            clearTimeout(timeoutId);
+            console.log('[GoogleSheets] Response status:', response.status, 'type:', response.type);
+            return response.text();
+        })
         .then(txt => {
-            if (txt === 'OK') showToast('Data berhasil dikirim ke Google Sheet (Apps Script).', 'success');
-            else showToast('Gagal kirim data ke Apps Script: ' + txt, 'error');
+            console.log('[GoogleSheets] Response body:', txt);
+            if (txt && (txt.includes('OK') || txt.includes('success') || txt.includes('Success'))) {
+                showToast('Data berhasil dikirim ke Google Sheet!', 'success');
+            } else if (txt) {
+                showToast('Respon dari Google Sheet: ' + txt, 'warning');
+            } else {
+                showToast('Data terkirim ke Google Sheet.', 'success');
+            }
         })
-        .catch(err => showToast('Error Apps Script: ' + err, 'error'));
+        .catch(err => {
+            clearTimeout(timeoutId);
+            console.error('[GoogleSheets] Error:', err);
+            if (err.name === 'AbortError') {
+                showToast('Gagal kirim data: Permintaan melebihi batas waktu (30 detik).', 'error');
+            } else if (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
+                showToast('Gagal kirim data ke Google Sheet. Periksa koneksi internet dan pastikan Apps Script sudah di-deploy sebagai Web App.', 'error');
+            } else {
+                showToast('Gagal kirim data ke Google Sheet: ' + err.message, 'error');
+            }
+        });
     }
     // --- END INTEGRASI GOOGLE SHEETS DENGAN APPS SCRIPT ---
 
@@ -3682,14 +3745,14 @@ document.addEventListener('DOMContentLoaded', function(){
                 body.push([
                     dateStr,
                     data.luasPanen,
-                    data.lahanBera,
-                    data.lahanOlahTanah,
-                    data.luasTambahTanam,
-                    total,
                     predictions.luasPanen,
+                    data.lahanBera,
                     predictions.lahanBera,
+                    data.lahanOlahTanah,
                     predictions.lahanOlahTanah,
-                    predictions.luasTambahTanam
+                    data.luasTambahTanam,
+                    predictions.luasTambahTanam,
+                    total
                 ]);
             }
             // Ringkasan
@@ -4034,37 +4097,6 @@ document.addEventListener('DOMContentLoaded', function(){
         setInterval(updateDateTime, 1000);
         updateDateTime();
     </script>
-<script>
-const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzzAYNfCIVHesJIEwfj8amkEKP1OrUoqWdf5-uPcmNfTIBgWLVksYByFPne63x8woLb/exec'; // Ganti dengan URL Web Apps Anda
-
-function sendRowToGoogleSheets(row) {
-    const cells = row.querySelectorAll('td');
-    let data = {
-        tanggal: cells[0]?.innerText || '',
-        panen_real: cells[1]?.innerText || '',
-        panen_prediksi: cells[2]?.innerText || '',
-        bera_real: cells[3]?.innerText || '',
-        bera_prediksi: cells[4]?.innerText || '',
-        olah_real: cells[5]?.innerText || '',
-        olah_prediksi: cells[6]?.innerText || '',
-        tanam_real: cells[7]?.innerText || '',
-        tanam_prediksi: cells[8]?.innerText || '',
-        keterangan: cells[9]?.innerText || ''
-    };
-    fetch(GOOGLE_SHEETS_URL, {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: { 'Content-Type': 'application/json' }
-    })
-    .then(res => res.json())
-    .then(response => {
-        console.log('Data berhasil dikirim:', response);
-    })
-    .catch(err => {
-        console.error('Gagal mengirim data:', err);
-    });
-}
-</script>
 </body>
 </html>
 
