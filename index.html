@@ -149,6 +149,7 @@ body {
     margin-bottom: 24px;
     position: relative;
     background-clip: padding-box;
+    z-index: 10;
 }
 
 .header h1 {
@@ -345,6 +346,8 @@ body {
     align-items: center;
     flex-wrap: wrap;
     justify-content: space-between;
+    position: relative;
+    z-index: 5;
 }
 .controls-group {
     display: flex;
@@ -368,6 +371,8 @@ select#filterMonthSelect, select#filterYearSelect, select#targetMonthTop, select
     border: 2px solid #ddd;
     border-radius: 5px;
     font-size: 14px;
+    position: relative;
+    z-index: 20;
 }
 .filter-card{
     width:100%;
@@ -379,6 +384,8 @@ select#filterMonthSelect, select#filterYearSelect, select#targetMonthTop, select
     background:linear-gradient(180deg,#ffffff,#fbfdff);
     box-shadow:0 6px 18px rgba(12,24,40,0.06);
     border:1px solid #e6eef8;
+    position: relative;
+    z-index: 15;
 }
 .filter-left, .filter-center, .filter-right{ display:flex; gap:10px; align-items:center; }
 .filter-center .control-btn{ margin-right:6px; }
@@ -422,6 +429,8 @@ table {
     font-size: 13px;
     border: 1px solid #cfd8e3;
     box-shadow: 0 2px 6px rgba(12,24,40,0.04);
+    position: relative;
+    z-index: 1;
 }
 thead th {
     padding: 12px 10px;
@@ -1035,6 +1044,7 @@ tfoot td {
                 if (typeof populateFilters === 'function') populateFilters();
                 if (typeof populateDesaSelector === 'function') populateDesaSelector();
                 if (typeof renderTable === 'function') renderTable();
+                if (typeof renderTimelineList === 'function') renderTimelineList();
                 if (typeof updateStats === 'function') updateStats();
                 if (typeof initTopTargetMenu === 'function') initTopTargetMenu();
                 
@@ -1322,15 +1332,7 @@ tfoot td {
                     }
                 </style>
                 <div class="target-2row" style="display:grid;grid-template-rows:auto;gap:10px 0;align-items:end;">
-                    <div style="display:grid;grid-template-columns:110px 110px 1fr 1fr 1fr auto;gap:10px;align-items:end;">
-                        <div class="form-group" style="min-width:0;">
-                            <label for="inputKecamatan">Kecamatan</label>
-                            <input type="text" id="inputKecamatan" placeholder="Kecamatan" style="width:100%;max-width:110px;">
-                        </div>
-                        <div class="form-group" style="min-width:0;">
-                            <label for="inputDesa">Desa</label>
-                            <input type="text" id="inputDesa" placeholder="Desa" style="width:100%;max-width:110px;">
-                        </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:end;">
                         <div class="form-group">
                             <span class="target-label">Bulan &amp; Tahun</span>
                             <div style="display:flex;gap:6px;align-items:center;margin-top:4px;">
@@ -2657,8 +2659,9 @@ document.addEventListener('DOMContentLoaded', function(){
                 }
 
             // Render table rows
+            const currentStore = window.dataStore || {};
             filteredDates.forEach(dateStr => {
-                const data = dataStore[dateStr] || {
+                const data = currentStore[dateStr] || {
                     luasPanen: 0,
                     lahanBera: 0,
                     lahanOlahTanah: 0,
@@ -2667,7 +2670,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
                 const predictions = calculatePredictions(dateStr);
                 const total = data.luasPanen + data.lahanBera + data.lahanOlahTanah + data.luasTambahTanam;
-                const hasData = dataStore[dateStr] !== undefined;
+                const hasData = currentStore[dateStr] !== undefined;
 
                 let keterangan = '';
                 if (data.gagalPanen) {
@@ -2683,8 +2686,9 @@ document.addEventListener('DOMContentLoaded', function(){
                                 // Cek apakah tanggal ini dalam rentang siklus bera (24 hari setelah panen manapun)
                                 function isInBeraCycle(dateStr) {
                                     const current = new Date(dateStr);
-                                    for (let key in dataStore) {
-                                        const data = dataStore[key];
+                                    const store = window.dataStore || {};
+                                    for (let key in store) {
+                                        const data = store[key];
                                         if (data.luasPanen > 0) {
                                             const panenDate = new Date(key);
                                             const diff = Math.floor((current - panenDate) / (1000 * 60 * 60 * 24));
@@ -2698,8 +2702,9 @@ document.addEventListener('DOMContentLoaded', function(){
                                 // Cek apakah tanggal ini dalam rentang menuju panen (115 hari setelah tambah tanam/tunda tanam)
                                 function isInMenujuPanenCycle(dateStr) {
                                     const current = new Date(dateStr);
-                                    for (let key in dataStore) {
-                                        const data = dataStore[key];
+                                    const store = window.dataStore || {};
+                                    for (let key in store) {
+                                        const data = store[key];
                                         let tanamDate = new Date(key);
                                         if (data.luasTambahTanam > 0) {
                                             if (data.tundaTanam && data.tanggalTanamBaru) {
@@ -2817,18 +2822,23 @@ document.addEventListener('DOMContentLoaded', function(){
                             return;
                         }
                         // Validasi tanggal di masa depan dihapus, user boleh input tanggal apapun
+                        // Gunakan window.dataStore untuk konsistensi dengan switch desa
+                        const currentStore = window.dataStore;
                         // Simpan state sebelum perubahan ke undoStack
-                        undoStack.push(JSON.stringify(dataStore));
+                        undoStack.push(JSON.stringify(currentStore));
                         redoStack = [];
                         // Catat before dan after untuk riwayat perubahan
-                        let before = dataStore[date] ? { ...dataStore[date] } : null;
-                        if (!dataStore[date]) dataStore[date] = { luasPanen:0, lahanBera:0, lahanOlahTanah:0, luasTambahTanam:0 };
-                        dataStore[date][field] = val;
-                        dataStore[date].timestamp = Date.now();
-                        let after = { ...dataStore[date] };
+                        let before = currentStore[date] ? { ...currentStore[date] } : null;
+                        if (!currentStore[date]) currentStore[date] = { luasPanen:0, lahanBera:0, lahanOlahTanah:0, luasTambahTanam:0 };
+                        currentStore[date][field] = val;
+                        currentStore[date].timestamp = Date.now();
+                        let after = { ...currentStore[date] };
                         // Tambahkan ke riwayat notifikasi
                         addHistoryLog('Edit (Tabel)', date, before, after);
-                        localStorage.setItem((getStorageKey('padiSawahData')), JSON.stringify(dataStore));
+                        localStorage.setItem((getStorageKey('padiSawahData')), JSON.stringify(currentStore));
+                        // Sinkronkan ke dataStore lokal dan window.dataStore
+                        dataStore = currentStore;
+                        syncDataStore();
                         // Konfirmasi otomatis: tampilkan ikon sukses
                         this.classList.add('input-success');
                         setTimeout(()=>this.classList.remove('input-success'), 1200);
@@ -2895,7 +2905,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
             // Gather years from data and create a reasonable range
             const yearsSet = new Set();
-            Object.keys(dataStore).forEach(dateStr => {
+            Object.keys(window.dataStore).forEach(dateStr => {
                 const date = new Date(dateStr);
                 if (!isNaN(date)) yearsSet.add(date.getFullYear());
             });
@@ -2933,14 +2943,10 @@ document.addEventListener('DOMContentLoaded', function(){
                         function loadLokasiTarget() {
                             const monthTop = document.getElementById('targetMonthTop');
                             const yearTop = document.getElementById('targetYearTop');
-                            const kecamatanInput = document.getElementById('inputKecamatan');
-                            const desaInput = document.getElementById('inputDesa');
-                            if (!monthTop || !yearTop || !kecamatanInput || !desaInput) return;
+                            if (!monthTop || !yearTop) return;
                             const key = `${yearTop.value}-${monthTop.value}`;
                             const targets = JSON.parse(localStorage.getItem((getStorageKey('padiSawahTargets'))) || '{}');
                             const t = targets[key] || {};
-                            kecamatanInput.value = t.kecamatan || '';
-                            desaInput.value = t.desa || '';
                             updatePrintInfo();
                         }
             const monthTop = document.getElementById('targetMonthTop');
@@ -2976,16 +2982,14 @@ document.addEventListener('DOMContentLoaded', function(){
             const yearTop = document.getElementById('targetYearTop');
             const tPanen = parseFloat(document.getElementById('monthlyTargetPanenTop').value) || 0;
             const tTanam = parseFloat(document.getElementById('monthlyTargetTanamTop').value) || 0;
-            const kecamatan = document.getElementById('inputKecamatan')?.value || '';
-            const desa = document.getElementById('inputDesa')?.value || '';
             if (!monthTop || !yearTop || !monthTop.value || !yearTop.value) {
                 alert('Pilih bulan dan tahun terlebih dahulu.');
                 return;
             }
             const key = `${yearTop.value}-${monthTop.value}`;
-            const targets = JSON.parse(localStorage.getItem((getStorageKey('padiSawahTargets'))) || '{}');
-            targets[key] = { targetPanen: tPanen, targetTanam: tTanam, kecamatan, desa };
-            localStorage.setItem((getStorageKey('padiSawahTargets')), JSON.stringify(targets));
+            const targets = JSON.parse(localStorage.getItem(getStorageKey('padiSawahTargets')) || '{}');
+            targets[key] = { targetPanen: tPanen, targetTanam: tTanam };
+            localStorage.setItem(getStorageKey('padiSawahTargets'), JSON.stringify(targets));
             alert('Target bulan disimpan.');
             // mirror to filter selects and inputs
             const monthFilter = document.getElementById('filterMonthSelect');
@@ -3003,10 +3007,10 @@ document.addEventListener('DOMContentLoaded', function(){
                 return;
             }
             const key = `${yearTop.value}-${monthTop.value}`;
-            const targets = JSON.parse(localStorage.getItem((getStorageKey('padiSawahTargets'))) || '{}');
+            const targets = JSON.parse(localStorage.getItem(getStorageKey('padiSawahTargets')) || '{}');
             if (targets[key]) {
                 delete targets[key];
-                localStorage.setItem((getStorageKey('padiSawahTargets')), JSON.stringify(targets));
+                localStorage.setItem(getStorageKey('padiSawahTargets'), JSON.stringify(targets));
             }
             document.getElementById('monthlyTargetPanenTop').value = '';
             document.getElementById('monthlyTargetTanamTop').value = '';
@@ -3021,13 +3025,14 @@ document.addEventListener('DOMContentLoaded', function(){
 
         function updateStats() {
             const statsSection = document.getElementById('statsSection');
-            
+
             let totalPanen = 0;
             let totalBera = 0;
             let totalOlahTanah = 0;
             let totalTambahTanam = 0;
 
-            Object.values(dataStore).forEach(data => {
+            const store = window.dataStore || {};
+            Object.values(store).forEach(data => {
                 totalPanen += data.luasPanen;
                 totalBera += data.lahanBera;
                 totalOlahTanah += data.lahanOlahTanah;
@@ -3441,19 +3446,6 @@ document.addEventListener('DOMContentLoaded', function(){
                 text += 'Semua Data';
             }
             info.textContent = text;
-            // Update lokasi info
-            const kecamatanInfo = document.getElementById('inputKecamatan')?.value || '';
-            const desaInfo = document.getElementById('inputDesa')?.value || '';
-            const lokasiInfo = document.getElementById('lokasiInfo');
-            if (lokasiInfo) {
-                let lokasiText = '';
-                if (kecamatan || desa) {
-                    lokasiText = 'Lokasi: ';
-                    if (kecamatan) lokasiText += 'Kecamatan ' + kecamatan;
-                    if (desa) lokasiText += (kecamatan ? ', ' : '') + 'Desa ' + desa;
-                }
-                lokasiInfo.textContent = lokasiText;
-            }
             // Also update the visible pill in the filter card
             const pill = document.getElementById('monthPill');
             if (pill) {
@@ -3464,12 +3456,6 @@ document.addEventListener('DOMContentLoaded', function(){
                     pill.textContent = 'Semua Data';
                 }
             }
-            // Event listener dipasang satu kali di bawah
-                    // Attach lokasi input listeners once
-                    const kecamatanInput = document.getElementById('inputKecamatan');
-                    const desaInput = document.getElementById('inputDesa');
-                    if (kecamatanInput) kecamatanInput.addEventListener('input', updatePrintInfo);
-                    if (desaInput) desaInput.addEventListener('input', updatePrintInfo);
         }
 
     // ===== TIMELINE INITIALIZATION (MOVED TO SCRIPT BLOCK 1) =====
@@ -3540,17 +3526,6 @@ document.addEventListener('DOMContentLoaded', function(){
                 ['%Capaian Tanam', target.targetTanam? formatValue(totals.realTanam/target.targetTanam*100) : '-']
             ];
             const rows = [];
-            // Tambahkan lokasi info di bagian atas
-            const kecamatanExcel = document.getElementById('inputKecamatan')?.value || '';
-            const desaExcel = document.getElementById('inputDesa')?.value || '';
-            let lokasiTextExcel = '';
-            if (kecamatanExcel || desaExcel) {
-                lokasiTextExcel = 'Lokasi: ';
-                if (kecamatanExcel) lokasiTextExcel += 'Kecamatan ' + kecamatanExcel;
-                if (desaExcel) lokasiTextExcel += (kecamatanExcel ? ', ' : '') + 'Desa ' + desaExcel;
-            }
-            rows.unshift([lokasiTextExcel]);
-            if (lokasiTextExcel) csvRows.unshift([lokasiTextExcel]);
             // Judul dan subjudul dengan tanggal & jam ekspor
             const now = new Date();
             // Ganti pemisah jam dari . menjadi :
@@ -3620,16 +3595,6 @@ document.addEventListener('DOMContentLoaded', function(){
                             doc.setFontSize(14);
                             doc.text('Laporan Data dan Prediksi Bulanan', 14, 14);
                             doc.text(`Bulan: ${monthSel.options[monthSel.selectedIndex].text} ${y}`, 14, 22);
-                            // Tambahkan lokasi info
-                            var kecamatanPDF = document.getElementById('inputKecamatan')?.value || '';
-                            var desaPDF = document.getElementById('inputDesa')?.value || '';
-                            var lokasiTextPDF = '';
-                            if (kecamatanPDF || desaPDF) {
-                                lokasiTextPDF = 'Lokasi: ';
-                                if (kecamatanPDF) lokasiTextPDF += 'Kecamatan ' + kecamatanPDF;
-                                if (desaPDF) lokasiTextPDF += (kecamatanPDF ? ', ' : '') + 'Desa ' + desaPDF;
-                            }
-                            if (lokasiTextPDF) doc.text(lokasiTextPDF, 14, 30);
                             doc.autoTable({
                                 head: [header],
                                 body: body,
@@ -3651,16 +3616,6 @@ document.addEventListener('DOMContentLoaded', function(){
                                 head: [],
                             });
                             doc.save(`laporan-padi-sawah-${y}-${m}.pdf`);
-                    // Tambahkan lokasi info di bagian atas CSV
-                    const kecamatanCSV = document.getElementById('inputKecamatan')?.value || '';
-                    const desaCSV = document.getElementById('inputDesa')?.value || '';
-                    let lokasiTextCSV = '';
-                    if (kecamatanCSV || desaCSV) {
-                        lokasiTextCSV = 'Lokasi: ';
-                        if (kecamatanCSV) lokasiTextCSV += 'Kecamatan ' + kecamatanCSV;
-                        if (desaCSV) lokasiTextCSV += (kecamatanCSV ? ', ' : '') + 'Desa ' + desaCSV;
-                    }
-                    if (lokasiTextCSV) csvRows.unshift([lokasiTextCSV]);
             // Buat workbook dan worksheet untuk ekspor Excel
             const ws = XLSX.utils.aoa_to_sheet(csvRows);
             const wb = XLSX.utils.book_new();
@@ -3726,16 +3681,6 @@ document.addEventListener('DOMContentLoaded', function(){
             doc.setFontSize(14);
             doc.text('Laporan Data dan Prediksi Bulanan', 14, 14);
             doc.text(`Bulan: ${monthSel.options[monthSel.selectedIndex].text} ${y}`, 14, 22);
-            // Tambahkan lokasi info
-            const kecamatanPDF = document.getElementById('inputKecamatan')?.value || '';
-            const desaPDF = document.getElementById('inputDesa')?.value || '';
-            let lokasiTextPDF = '';
-            if (kecamatanPDF || desaPDF) {
-                lokasiTextPDF = 'Lokasi: ';
-                if (kecamatanPDF) lokasiTextPDF += 'Kecamatan ' + kecamatanPDF;
-                if (desaPDF) lokasiTextPDF += (kecamatanPDF ? ', ' : '') + 'Desa ' + desaPDF;
-            }
-            if (lokasiTextPDF) doc.text(lokasiTextPDF, 14, 30);
             doc.autoTable({
                 head: [header],
                 body: body,
