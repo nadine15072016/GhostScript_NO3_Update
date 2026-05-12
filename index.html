@@ -1003,7 +1003,6 @@ tfoot td {
         }
         
         function removeDesa(nama) {
-            if (nama === 'Semumu') return; // Jangan hapus desa default
             const allDesa = getAllDesa();
             const idx = allDesa.indexOf(nama);
             if (idx !== -1) {
@@ -1081,7 +1080,7 @@ tfoot td {
                     </div>
                     <div style="display:flex;gap:6px;">
                         ${currentDesa !== desa ? `<button onclick="switchDesa('${desa}')" style="padding:6px 12px;background:#2d8cff;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;transition:all 0.2s;">Gunakan</button>` : ''}
-                        ${desa !== 'Semumu' ? `<button onclick="deleteDesa('${desa}')" style="padding:6px 12px;background:#e74c3c;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;transition:all 0.2s;">Hapus</button>` : ''}
+                        <button onclick="deleteDesa('${desa}')" style="padding:6px 12px;background:#e74c3c;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;transition:all 0.2s;">Hapus</button>
                     </div>
                 </div>
             `).join('');
@@ -1660,7 +1659,7 @@ tfoot td {
 
     <!-- Info Pembuat Aplikasi -->
     <div style="width:100%;text-align:center;font-size:12px;color:#888;margin:32px 0 8px 0;letter-spacing:0.2px;">
-        Create by : GHOST SCRIPT Development Team KRC - 2026<br>
+        Create by : GHOST SCRIPT Development Team KRC - 2026 | Versi 4.2.0 (Update Selasa, 19 Mei 2026)<br>
         <span style="color:#1764d6;font-size:12px;"># supriantozero@gmail.com</span>
     </div>
     <!-- SheetJS (XLSX) untuk ekspor Excel -->
@@ -1671,11 +1670,15 @@ tfoot td {
     <script>
                         // --- FITUR RIWAYAT PERUBAHAN DATA ---
 // --- RIWAYAT NOTIFIKASI MODULAR ---
+// Variabel untuk melacak peringatan kapasitas log
+window.logWarningShown = false;
 function getHistoryLog() {
     return JSON.parse(localStorage.getItem(getStorageKey('padiSawahHistory')) || '[]');
 }
 function addHistoryLog(action, tanggal, before, after) {
-    const log = getHistoryLog();
+    const MAX_LOG = 200;
+    const WARNING_THRESHOLD = 180; // Peringatkan saat mendekati 90% kapasitas
+    let log = getHistoryLog();
     log.push({
         waktu: new Date().toISOString(),
         aksi: action,
@@ -1683,7 +1686,30 @@ function addHistoryLog(action, tanggal, before, after) {
         sebelum: before,
         sesudah: after
     });
-    localStorage.setItem(getStorageKey('padiSawahHistory'), JSON.stringify(log));
+    // Potong log lama jika melebihi batas
+    if (log.length > MAX_LOG) {
+        log = log.slice(log.length - MAX_LOG);
+    }
+    // Peringatan kapasitas log mendekati batas
+    if (log.length >= WARNING_THRESHOLD && !window.logWarningShown) {
+        window.logWarningShown = true;
+        const remaining = MAX_LOG - log.length;
+        showToast(`Riwayat hampir penuh! Sisa ${remaining} entri sebelum log lama dihapus otomatis.`, 'warning', 4000);
+    } else if (log.length < WARNING_THRESHOLD) {
+        window.logWarningShown = false;
+    }
+    try {
+        localStorage.setItem(getStorageKey('padiSawahHistory'), JSON.stringify(log));
+    } catch (e) {
+        // Jika masih penuh, potong menjadi setengah
+        log = log.slice(Math.floor(log.length / 2) * -1);
+        try {
+            localStorage.setItem(getStorageKey('padiSawahHistory'), JSON.stringify(log));
+        } catch (e2) {
+            // Terakhir: kosongkan log agar tidak menghalangi penggunaan
+            localStorage.removeItem(getStorageKey('padiSawahHistory'));
+        }
+    }
     updateNotifCount();
 }
 function showHistoryModal() {
@@ -2493,20 +2519,6 @@ document.addEventListener('DOMContentLoaded', function(){
                 
                 // Trigger auto-backup setelah save
                 autoBackupData();
-            // Kirim data ke Google Sheets setelah simpan
-            // Siapkan data baris sesuai urutan kolom tabel
-            const rowData = [
-                tanggal,
-                luasPanen,
-                calculatePredictions(tanggal).luasPanen,
-                lahanBera,
-                calculatePredictions(tanggal).lahanBera,
-                lahanOlahTanah,
-                calculatePredictions(tanggal).lahanOlahTanah,
-                luasTambahTanam,
-                calculatePredictions(tanggal).luasTambahTanam,
-                gagalPanen ? 'Gagal Panen' : tundaTanam ? 'Tunda Tanam' : ''
-            ];
                 resetForm();
                 populateFilters();
                 updateStats();
@@ -2824,21 +2836,6 @@ document.addEventListener('DOMContentLoaded', function(){
                         renderTable();
                         updateStats();
                         updateUndoRedoStatus();
-                        // Kirim data baris ke Google Sheets
-                        // Ambil data baris dari input setelah perubahan inline edit
-                        const rowData = [
-                            date,
-                            dataStore[date].luasPanen,
-                            calculatePredictions(date).luasPanen,
-                            dataStore[date].lahanBera,
-                            calculatePredictions(date).lahanBera,
-                            dataStore[date].lahanOlahTanah,
-                            calculatePredictions(date).lahanOlahTanah,
-                            dataStore[date].luasTambahTanam,
-                            calculatePredictions(date).luasTambahTanam,
-                            dataStore[date].gagalPanen ? 'Gagal Panen' : dataStore[date].tundaTanam ? 'Tunda Tanam' : ''
-                        ];
-                        sendRowToGoogleSheets(rowData);
                     });
                     // Tambahkan style untuk konfirmasi otomatis dan error
                     const style = document.createElement('style');
@@ -3474,59 +3471,6 @@ document.addEventListener('DOMContentLoaded', function(){
                     if (kecamatanInput) kecamatanInput.addEventListener('input', updatePrintInfo);
                     if (desaInput) desaInput.addEventListener('input', updatePrintInfo);
         }
-    // --- INTEGRASI GOOGLE SHEETS DENGAN APPS SCRIPT WEB APPS ---
-    // Ganti dengan URL Web Apps Anda
-    const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzcE8qAM3OjnV5Ql8IhdDov9OwJl3CoCOcis4Ixav2-51KXqL8AbgCFJmsr4IlKEXtp/exec';
-
-    // Fungsi untuk mengirim data baris ke Google Sheets via Apps Script Web Apps
-    function sendRowToGoogleSheets(rowData) {
-        if (!rowData || !Array.isArray(rowData)) return;
-        const dataStr = JSON.stringify(rowData);
-        showToast('Mengirim data ke Google Sheet...', 'info');
-        console.log('[GoogleSheets] Mengirim data:', dataStr);
-
-        // Gunakan redirect: 'follow' dan no-cors agar kompatibel dengan Apps Script
-        // Kirim sebagai FormData untuk menghindari preflight OPTIONS request
-        const formData = new FormData();
-        formData.append('data', dataStr);
-
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 30000);
-
-        fetch(GOOGLE_APPS_SCRIPT_URL, {
-            method: 'POST',
-            body: formData,
-            redirect: 'follow',
-            signal: controller.signal
-        })
-        .then(response => {
-            clearTimeout(timeoutId);
-            console.log('[GoogleSheets] Response status:', response.status, 'type:', response.type);
-            return response.text();
-        })
-        .then(txt => {
-            console.log('[GoogleSheets] Response body:', txt);
-            if (txt && (txt.includes('OK') || txt.includes('success') || txt.includes('Success'))) {
-                showToast('Data berhasil dikirim ke Google Sheet!', 'success');
-            } else if (txt) {
-                showToast('Respon dari Google Sheet: ' + txt, 'warning');
-            } else {
-                showToast('Data terkirim ke Google Sheet.', 'success');
-            }
-        })
-        .catch(err => {
-            clearTimeout(timeoutId);
-            console.error('[GoogleSheets] Error:', err);
-            if (err.name === 'AbortError') {
-                showToast('Gagal kirim data: Permintaan melebihi batas waktu (30 detik).', 'error');
-            } else if (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
-                showToast('Gagal kirim data ke Google Sheet. Periksa koneksi internet dan pastikan Apps Script sudah di-deploy sebagai Web App.', 'error');
-            } else {
-                showToast('Gagal kirim data ke Google Sheet: ' + err.message, 'error');
-            }
-        });
-    }
-    // --- END INTEGRASI GOOGLE SHEETS DENGAN APPS SCRIPT ---
 
     // ===== TIMELINE INITIALIZATION (MOVED TO SCRIPT BLOCK 1) =====
     // Inisialisasi filter timeline saat halaman dimuat
