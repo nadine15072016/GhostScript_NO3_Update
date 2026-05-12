@@ -3571,7 +3571,7 @@ document.addEventListener('DOMContentLoaded', function(){
                 const data = dataStore[dateStr] || { luasPanen:0, lahanBera:0, lahanOlahTanah:0, luasTambahTanam:0 };
                 const predictions = calculatePredictions(dateStr);
                 const total = data.luasPanen + data.lahanBera + data.lahanOlahTanah + data.luasTambahTanam;
-                body.push([
+                const row = [
                     dateStr,
                     data.luasPanen,
                     predictions.luasPanen,
@@ -3582,7 +3582,10 @@ document.addEventListener('DOMContentLoaded', function(){
                     data.luasTambahTanam,
                     predictions.luasTambahTanam,
                     total
-                ]);
+                ];
+                body.push(row);
+                rows.push(row);
+                csvRows.push(row);
             }
             // Baris total bulan (identik dengan tabel summary)
             rows.push(['']);
