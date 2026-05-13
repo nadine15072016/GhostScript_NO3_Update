@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sipro (LTT) - Sistem Prediksi Otomatis</title>
     <style>
 @keyframes todayPulse {
     0% {
@@ -317,11 +320,7 @@ body {
 }
 
 .section-title {
-    color: #2c3e50;
     margin-bottom: 12px;
-    font-size: 20px;
-    display: flex;
-    align-items: center;
 }
 .section-title::before {
     content: '🎯';
@@ -330,7 +329,6 @@ body {
 }
 .section-title--modern::before { content: none; }
 .section-title--modern svg { width:32px; height:32px; margin-right:12px; vertical-align:middle; flex: none; }
-.section-title { font-size:18px; }
 .content h2, .form-section h2, .table-section h2, .monthly-target-top h2, .section-title, .section-title--modern {
     font-size:18px;
     font-weight:700;
@@ -349,20 +347,10 @@ body {
     position: relative;
     z-index: 5;
 }
-.controls-group {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-}
-.controls-group > * { margin-right: 6px; }
-.controls-group select { min-width: 130px; }
-.controls-group input { min-width: 140px; }
 #btnShowAll{ min-width:48px; display:inline-flex; align-items:center; justify-content:center; padding:8px 10px; }
 select#filterMonthSelect, select#filterYearSelect, select#targetMonthTop, select#targetYearTop, input.target-input{ min-width:140px; }
 @media (max-width: 800px) {
     .table-controls { flex-direction: column; align-items: stretch; gap: 10px; }
-    .controls-group { justify-content: flex-start; flex-wrap: wrap; gap:10px; }
-    .controls-group > * { margin-right: 8px; margin-bottom: 6px; }
     select#filterMonthSelect, select#filterYearSelect, select#targetMonthTop, select#targetYearTop, input.target-input{ width:100%; min-width:0; }
     #btnShowAll{ align-self:flex-start; }
 }
@@ -387,7 +375,6 @@ select#filterMonthSelect, select#filterYearSelect, select#targetMonthTop, select
     position: relative;
     z-index: 15;
 }
-.filter-left, .filter-center, .filter-right{ display:flex; gap:10px; align-items:center; }
 .filter-center .control-btn{ margin-right:6px; }
 #btnLabel{ display:inline-block; }
 .month-pill{ padding:10px 14px; border-radius:999px; background:linear-gradient(90deg,#e6f0ff,#f1f8ff); border:1px solid #cfe4ff; font-weight:700; color:#124e9a; box-shadow:0 2px 8px rgba(18,78,154,0.06); }
@@ -397,7 +384,7 @@ select#filterMonthSelect, select#filterYearSelect, select#targetMonthTop, select
 .btn-ghost{ background:transparent; border:1px solid #d0e4ff; color:#1764d6; }
 .btn-ghost:hover{ background:#eaf3ff; transform:translateY(-2px); }
 .btn-primary-sm{ background:linear-gradient(90deg,#2d8cff,#1764d6); color:white; border-radius:8px; padding:10px 14px; box-shadow:0 6px 18px rgba(23,100,214,0.18); }
-@media (max-width:800px){ .filter-card{ flex-direction:column; align-items:stretch; } .filter-left,.filter-center,.filter-right{ width:100%; justify-content:space-between; } .target-input{ width:48%; } }
+@media (max-width:800px){ .filter-card{ flex-direction:column; align-items:stretch; } .filter-center,.filter-right{ width:100%; justify-content:space-between; } .target-input{ width:48%; } }
 .target-hint { font-size:12px; color:#4b5563; margin-top:6px; opacity:0.9; }
 .print-info {
     display: block;
@@ -417,20 +404,14 @@ table {
     border-collapse: collapse;
     background: white;
     font-size: 13px;
+    border: 1.5px solid #bfc9d1;
+    box-shadow: 0 2px 6px rgba(12,24,40,0.04);
+    position: relative;
+    z-index: 1;
 }
 thead {
     background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
     color: white;
-}
-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: white;
-    font-size: 13px;
-    border: 1px solid #cfd8e3;
-    box-shadow: 0 2px 6px rgba(12,24,40,0.04);
-    position: relative;
-    z-index: 1;
 }
 thead th {
     padding: 12px 10px;
@@ -508,10 +489,6 @@ tbody tr:hover td {
     color: #234;
     padding: 8px 10px;
 }
-table {
-    border-collapse: collapse;
-    border: 1.5px solid #bfc9d1 !important;
-}
 th, td {
     text-align: center;
     vertical-align: middle;
@@ -574,18 +551,6 @@ th, td {
     max-width: 100%;
     box-sizing: border-box;
     margin: 0;
-}
-@media (max-width: 900px) {
-    .stats-section {
-        flex-direction: column;
-        gap: 16px;
-    }
-    .stat-card {
-        min-width: 0;
-        width: 100%;
-    }
-}
-.stat-card {
     background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(246,250,255,0.96));
     color: #0f172a;
     border-radius: 12px;
@@ -597,6 +562,16 @@ th, td {
     flex-direction:column;
     gap:6px;
     transition: transform .14s ease, box-shadow .14s ease, border-color .14s ease;
+}
+@media (max-width: 900px) {
+    .stats-section {
+        flex-direction: column;
+        gap: 16px;
+    }
+    .stat-card {
+        min-width: 0;
+        width: 100%;
+    }
 }
 .stat-card:hover { transform: translateY(-6px); box-shadow: 0 22px 50px rgba(16,24,40,0.10); }
 .stat-card.hybrid { display:flex; align-items:stretch; padding:0; overflow:hidden; }
@@ -666,7 +641,6 @@ th, td {
     color: #64748b;
 }
 .stat-meta { display:flex; flex-direction:column; align-items:flex-end; gap:6px; }
-.stat-meta .percent { font-weight:700; color:#334155; }
 .legend {
     background: #f8f9fa;
     padding: 15px;
@@ -912,6 +886,9 @@ tfoot td {
     </style>
 </head>
 <body>
+    <div id="offlineStatusBanner" style="display:none;position:sticky;top:0;z-index:9999;background:#fff3cd;color:#7a5b00;border-bottom:1px solid #f0d98c;padding:10px 14px;font-size:13px;font-weight:600;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+        Mode offline aktif. Data lokal tetap bisa dipakai, tetapi fitur ekspor PDF/Excel memerlukan koneksi saat library eksternal belum tersedia.
+    </div>
         <script>
         // === SISTEM MANAJEMEN NAMA PENGGUNA ===
         function getNamaPengguna() {
@@ -919,7 +896,7 @@ tfoot td {
         }
         
         function setNamaPengguna(nama) {
-            localStorage.setItem('sipro_namaPengguna', nama);
+            safeSetStorageItem('sipro_namaPengguna', nama, 'nama pengguna');
         }
         
         function updateNamaPenggunaDisplay() {
@@ -987,27 +964,369 @@ tfoot td {
         // === SISTEM MANAJEMEN MULTI-DESA ===
         // Get current village/desa from localStorage
         function getCurrentDesa() {
-            return localStorage.getItem('sipro_currentDesa') || 'Semumu';
+            const saved = localStorage.getItem('sipro_currentDesa');
+            const allDesa = getAllDesa();
+            if (saved && allDesa.includes(saved)) {
+                return saved;
+            }
+            return '';
+        }
+
+        const LARGE_STORAGE_DB_NAME = 'sipro_large_storage';
+        const LARGE_STORAGE_DB_VERSION = 1;
+        const LARGE_STORAGE_STORE = 'kv';
+        const LARGE_STORAGE_KEYS = new Set([
+            'padiSawahData',
+            'padiSawahTargets',
+            'padiSawahHistory',
+            'padiSawahNotifLog',
+            'autoBackup'
+        ]);
+        const largeStorageCache = new Map();
+        let largeStorageReadyPromise = null;
+
+        function isLargeStorageKey(key) {
+            return typeof key === 'string' && /^sipro_.+_(padiSawahData|padiSawahTargets|padiSawahHistory|padiSawahNotifLog|autoBackup)$/.test(key);
+        }
+
+        function openLargeStorageDb() {
+            if (typeof indexedDB === 'undefined') {
+                return Promise.reject(new Error('IndexedDB tidak tersedia di browser ini.'));
+            }
+
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(LARGE_STORAGE_DB_NAME, LARGE_STORAGE_DB_VERSION);
+
+                request.onupgradeneeded = () => {
+                    const db = request.result;
+                    if (!db.objectStoreNames.contains(LARGE_STORAGE_STORE)) {
+                        db.createObjectStore(LARGE_STORAGE_STORE, { keyPath: 'key' });
+                    }
+                };
+
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(request.error || new Error('Gagal membuka IndexedDB penyimpanan besar.'));
+            });
+        }
+
+        async function migrateLargeStorageFromLocalStorage(db) {
+            const keysToMigrate = [];
+
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (isLargeStorageKey(key)) {
+                    keysToMigrate.push(key);
+                }
+            }
+
+            if (keysToMigrate.length === 0) return;
+
+            await new Promise((resolve, reject) => {
+                const tx = db.transaction(LARGE_STORAGE_STORE, 'readwrite');
+                const store = tx.objectStore(LARGE_STORAGE_STORE);
+
+                keysToMigrate.forEach(key => {
+                    const existingValue = largeStorageCache.has(key) ? largeStorageCache.get(key) : localStorage.getItem(key);
+                    if (existingValue !== null && existingValue !== undefined) {
+                        largeStorageCache.set(key, existingValue);
+                        store.put({ key, value: existingValue });
+                    }
+                });
+
+                tx.oncomplete = () => {
+                    keysToMigrate.forEach(key => localStorage.removeItem(key));
+                    resolve();
+                };
+                tx.onerror = () => reject(tx.error || new Error('Gagal migrasi data ke IndexedDB.'));
+            });
+        }
+
+        async function ensureLargeStorageReady() {
+            if (!largeStorageReadyPromise) {
+                largeStorageReadyPromise = (async () => {
+                    try {
+                        const db = await openLargeStorageDb();
+
+                        await new Promise((resolve, reject) => {
+                            const tx = db.transaction(LARGE_STORAGE_STORE, 'readonly');
+                            const store = tx.objectStore(LARGE_STORAGE_STORE);
+                            const request = store.getAll();
+
+                            request.onsuccess = () => {
+                                const items = Array.isArray(request.result) ? request.result : [];
+                                items.forEach(entry => {
+                                    if (entry && typeof entry.key === 'string') {
+                                        largeStorageCache.set(entry.key, entry.value);
+                                    }
+                                });
+                                resolve();
+                            };
+
+                            request.onerror = () => reject(request.error || new Error('Gagal membaca cache IndexedDB.'));
+                        });
+
+                        await migrateLargeStorageFromLocalStorage(db);
+                        db.close();
+                    } catch (err) {
+                        console.error('[largeStorage] Inisialisasi gagal:', err);
+                    }
+                })();
+            }
+
+            return largeStorageReadyPromise;
+        }
+
+        function getManagedStorageItem(key, fallbackValue = '') {
+            if (isLargeStorageKey(key)) {
+                if (largeStorageCache.has(key)) {
+                    return largeStorageCache.get(key);
+                }
+
+                const legacyValue = localStorage.getItem(key);
+                if (legacyValue !== null) {
+                    largeStorageCache.set(key, legacyValue);
+                    return legacyValue;
+                }
+
+                return fallbackValue;
+            }
+
+            const value = localStorage.getItem(key);
+            return value === null ? fallbackValue : value;
+        }
+
+        function writeManagedLargeStorageItem(key, value) {
+            if (!isLargeStorageKey(key)) return Promise.resolve();
+
+            largeStorageCache.set(key, value);
+            return ensureLargeStorageReady().then(() => openLargeStorageDb().then(db => new Promise((resolve, reject) => {
+                const tx = db.transaction(LARGE_STORAGE_STORE, 'readwrite');
+                const store = tx.objectStore(LARGE_STORAGE_STORE);
+                store.put({ key, value });
+                tx.oncomplete = () => {
+                    db.close();
+                    resolve();
+                };
+                tx.onerror = () => {
+                    db.close();
+                    reject(tx.error || new Error(`Gagal menyimpan ${key} ke IndexedDB.`));
+                };
+            })));
+        }
+
+        function removeManagedLargeStorageItem(key) {
+            if (!isLargeStorageKey(key)) return Promise.resolve();
+
+            largeStorageCache.delete(key);
+            return ensureLargeStorageReady().then(() => openLargeStorageDb().then(db => new Promise((resolve, reject) => {
+                const tx = db.transaction(LARGE_STORAGE_STORE, 'readwrite');
+                const store = tx.objectStore(LARGE_STORAGE_STORE);
+                store.delete(key);
+                tx.oncomplete = () => {
+                    db.close();
+                    resolve();
+                };
+                tx.onerror = () => {
+                    db.close();
+                    reject(tx.error || new Error(`Gagal menghapus ${key} dari IndexedDB.`));
+                };
+            })));
+        }
+
+        function safeSetStorageItem(key, value, sourceLabel, fallbackKeys = []) {
+            if (isLargeStorageKey(key)) {
+                fallbackKeys.forEach(fallbackKey => {
+                    if (isLargeStorageKey(fallbackKey)) {
+                        largeStorageCache.delete(fallbackKey);
+                        removeManagedLargeStorageItem(fallbackKey).catch(err => console.error(`[safeSetStorageItem] Gagal membersihkan ${fallbackKey}:`, err));
+                    } else {
+                        localStorage.removeItem(fallbackKey);
+                    }
+                });
+
+                writeManagedLargeStorageItem(key, value).catch(err => {
+                    console.error(`[safeSetStorageItem] Gagal menyimpan ${key}:`, err);
+                    if (sourceLabel) {
+                        showToast(`❌ Penyimpanan ${sourceLabel} gagal di IndexedDB.`, 'error');
+                    }
+                });
+                return true;
+            }
+
+            try {
+                localStorage.setItem(key, value);
+                return true;
+            } catch (err) {
+                const isQuotaError = err && (err.name === 'QuotaExceededError' || err.code === 22 || err.code === 1014);
+                if (!isQuotaError) throw err;
+
+                try {
+                    fallbackKeys.forEach(fallbackKey => localStorage.removeItem(fallbackKey));
+                    localStorage.setItem(key, value);
+                    if (sourceLabel) {
+                        showToast(`⚠️ Penyimpanan ${sourceLabel} berhasil setelah membersihkan data sementara lama.`, 'warning');
+                    }
+                    return true;
+                } catch (retryErr) {
+                    console.error(`[safeSetStorageItem] Gagal menyimpan ${key}:`, retryErr);
+                    if (sourceLabel) {
+                        showToast(`❌ Penyimpanan ${sourceLabel} gagal karena kapasitas browser penuh.`, 'error');
+                    }
+                    return false;
+                }
+            }
+        }
+
+        function safeRemoveStorageItem(key) {
+            if (isLargeStorageKey(key)) {
+                removeManagedLargeStorageItem(key).catch(err => console.error(`[safeRemoveStorageItem] Gagal menghapus ${key}:`, err));
+                return true;
+            }
+
+            try {
+                localStorage.removeItem(key);
+                return true;
+            } catch (err) {
+                console.error(`[safeRemoveStorageItem] Gagal menghapus ${key}:`, err);
+                return false;
+            }
         }
         
         function setCurrentDesa(desa) {
-            localStorage.setItem('sipro_currentDesa', desa);
+            const normalized = (desa || '').trim();
+            console.log(`[setCurrentDesa] Mengubah desa menjadi: ${normalized || '(kosong)'}`);
+            if (normalized) {
+                safeSetStorageItem('sipro_currentDesa', normalized, 'desa aktif');
+            } else {
+                localStorage.removeItem('sipro_currentDesa');
+            }
+            console.log(`[setCurrentDesa] Verified: ${localStorage.getItem('sipro_currentDesa')}`);
+            updateActiveDesaDisplay();
         }
-        
+
+        function updateActiveDesaDisplay() {
+            const activeDesaDisplay = document.getElementById('activeDesaDisplay');
+            if (activeDesaDisplay) {
+                activeDesaDisplay.textContent = getCurrentDesa() || '-';
+            }
+        }
+    
         function getStorageKey(baseKey) {
-            return `sipro_${getCurrentDesa()}_${baseKey}`;
+            const desa = getCurrentDesa();
+            const key = `sipro_${desa}_${baseKey}`;
+            return key;
+        }
+
+        function hasActiveDesa() {
+            return Boolean(getCurrentDesa());
+        }
+
+        function ensureActiveDesa(actionLabel) {
+            const desa = getCurrentDesa();
+            if (desa) return desa;
+            showToast(`⚠️ Tidak ada desa aktif. Pilih atau tambahkan desa terlebih dahulu sebelum ${actionLabel}.`, 'warning');
+            return '';
+        }
+
+        function saveCurrentDesaDataStore(storeObject, sourceLabel) {
+            const desa = ensureActiveDesa(sourceLabel || 'menyimpan data');
+            if (!desa) return false;
+
+            const key = getStorageKey('padiSawahData');
+            const payload = JSON.stringify(compactDataStoreForStorage(storeObject));
+
+            return safeSetStorageItem(
+                key,
+                payload,
+                sourceLabel || 'data',
+                [
+                    getStorageKey('padiSawahHistory'),
+                    getStorageKey('padiSawahNotifLog'),
+                    getStorageKey('autoBackup')
+                ]
+            );
+        }
+
+        function saveCurrentDesaRaw(keyBase, value, sourceLabel) {
+            const desa = ensureActiveDesa(sourceLabel || 'menyimpan data');
+            if (!desa) return false;
+
+            const key = getStorageKey(keyBase);
+            return safeSetStorageItem(
+                key,
+                value,
+                sourceLabel || 'data tambahan',
+                [
+                    getStorageKey('padiSawahHistory'),
+                    getStorageKey('padiSawahNotifLog'),
+                    getStorageKey('autoBackup')
+                ]
+            );
+        }
+
+        function compactDataStoreForStorage(storeObject) {
+            const compacted = {};
+            const source = storeObject && typeof storeObject === 'object' ? storeObject : {};
+
+            Object.keys(source).forEach(dateKey => {
+                const item = source[dateKey];
+                if (!item || typeof item !== 'object') return;
+
+                const normalized = {
+                    luasPanen: Number(item.luasPanen) || 0,
+                    lahanBera: Number(item.lahanBera) || 0,
+                    lahanOlahTanah: Number(item.lahanOlahTanah) || 0,
+                    luasTambahTanam: Number(item.luasTambahTanam) || 0,
+                    gagalPanen: !!item.gagalPanen,
+                    tundaTanam: !!item.tundaTanam,
+                    tanggalTanamBaru: item.tanggalTanamBaru || '',
+                    alasanGagalPanen: item.alasanGagalPanen || '',
+                    alasanTundaTanam: item.alasanTundaTanam || ''
+                };
+
+                const hasMeaningfulData = normalized.luasPanen > 0 || normalized.lahanBera > 0 || normalized.lahanOlahTanah > 0 || normalized.luasTambahTanam > 0 || normalized.gagalPanen || normalized.tundaTanam || normalized.tanggalTanamBaru || normalized.alasanGagalPanen || normalized.alasanTundaTanam;
+                if (hasMeaningfulData) {
+                    compacted[dateKey] = normalized;
+                }
+            });
+
+            return compacted;
         }
         
         function getAllDesa() {
-            const desa = JSON.parse(localStorage.getItem('sipro_allDesa') || '["Semumu"]');
-            return Array.isArray(desa) ? desa : ['Semumu'];
+            const raw = localStorage.getItem('sipro_allDesa');
+            let desa = [];
+            try {
+                desa = raw ? JSON.parse(raw) : [];
+            } catch (err) {
+                desa = [];
+            }
+            if (!Array.isArray(desa)) desa = [];
+
+            // Normalisasi: string, trim, unique, buang nilai kosong
+            const cleaned = [...new Set(desa.map(d => String(d).trim()).filter(Boolean))];
+
+            // Inisialisasi pada first run: jangan tetapkan desa default otomatis.
+            // Jika `raw === null` berarti belum ada data desa sama sekali; kembalikan array kosong
+            // agar aplikasi tidak membuat asumsi tentang nama desa default.
+            if (raw === null) {
+                safeSetStorageItem('sipro_allDesa', JSON.stringify(cleaned), 'daftar desa');
+                return cleaned;
+            }
+
+            // Simpan ulang jika hasil normalisasi berbeda
+            if (JSON.stringify(cleaned) !== JSON.stringify(desa)) {
+                safeSetStorageItem('sipro_allDesa', JSON.stringify(cleaned), 'daftar desa');
+            }
+
+            return cleaned;
         }
         
         function addDesa(nama) {
             const allDesa = getAllDesa();
             if (!allDesa.includes(nama)) {
                 allDesa.push(nama);
-                localStorage.setItem('sipro_allDesa', JSON.stringify(allDesa));
+                safeSetStorageItem('sipro_allDesa', JSON.stringify(allDesa), 'daftar desa');
             }
         }
         
@@ -1016,37 +1335,59 @@ tfoot td {
             const idx = allDesa.indexOf(nama);
             if (idx !== -1) {
                 allDesa.splice(idx, 1);
-                localStorage.setItem('sipro_allDesa', JSON.stringify(allDesa));
+                safeSetStorageItem('sipro_allDesa', JSON.stringify(allDesa), 'daftar desa');
             }
+        }
+
+        function refreshUIAfterDesaChange(options = {}) {
+            const { resetFilters = true } = options;
+
+            if (typeof updateActiveDesaDisplay === 'function') updateActiveDesaDisplay();
+            if (typeof populateDesaSelector === 'function') populateDesaSelector();
+            if (typeof renderDesaList === 'function') renderDesaList();
+
+            if (resetFilters) {
+                const monthSel = document.getElementById('filterMonthSelect');
+                const yearSel = document.getElementById('filterYearSelect');
+                const topMonth = document.getElementById('targetMonthTop');
+                const topYear = document.getElementById('targetYearTop');
+                if (monthSel) monthSel.value = '';
+                if (yearSel) yearSel.value = '';
+                if (topMonth) topMonth.value = '';
+                if (topYear) topYear.value = '';
+            }
+
+            if (typeof populateFilters === 'function') populateFilters();
+            if (typeof initTopTargetMenu === 'function') initTopTargetMenu();
+            if (typeof onFilterChange === 'function') onFilterChange();
+            if (typeof updateStats === 'function') updateStats();
+            if (typeof updateNotifCount === 'function') updateNotifCount();
+            if (typeof populateTimelineFilters === 'function') populateTimelineFilters();
+            if (typeof renderTimelineList === 'function') renderTimelineList();
+            if (typeof updatePrintInfo === 'function') updatePrintInfo();
         }
         
         function switchDesaInstant(nama) {
             if (getCurrentDesa() === nama) return; // Sudah di desa itu
             
             try {
+                // Set desa baru ke localStorage terlebih dahulu
                 setCurrentDesa(nama);
                 
+                // Update selector DOM langsung agar tidak ada delay visual
+                const selector = document.getElementById('desaSelector');
+                if (selector) {
+                    selector.value = nama;
+                }
+                
                 // Reload dataStore dari storage desa baru
-                const newData = localStorage.getItem(getStorageKey('padiSawahData'));
+                const newData = getManagedStorageItem(getStorageKey('padiSawahData'), '{}');
                 dataStore = newData ? JSON.parse(newData) : {};
                 window.dataStore = dataStore;
-                
-                // Update nama pengguna dan header
+
+                // Refresh seluruh menu agar sinkron tanpa reload browser
                 if (typeof updateNamaPenggunaDisplay === 'function') updateNamaPenggunaDisplay();
-                
-                // Clear filters untuk memastikan data muncul
-                const monthSel = document.getElementById('filterMonthSelect');
-                const yearSel = document.getElementById('filterYearSelect');
-                if (monthSel) monthSel.value = '';
-                if (yearSel) yearSel.value = '';
-                
-                // Re-render dalam urutan yang benar
-                if (typeof populateFilters === 'function') populateFilters();
-                if (typeof populateDesaSelector === 'function') populateDesaSelector();
-                if (typeof renderTable === 'function') renderTable();
-                if (typeof renderTimelineList === 'function') renderTimelineList();
-                if (typeof updateStats === 'function') updateStats();
-                if (typeof initTopTargetMenu === 'function') initTopTargetMenu();
+                refreshUIAfterDesaChange({ resetFilters: true });
                 
                 showToast(`✅ Desa "${nama}" dimuat (data muncul otomatis)`, 'success');
                 console.log(`[switchDesaInstant] Berhasil switch ke desa: ${nama}`);
@@ -1118,33 +1459,110 @@ tfoot td {
         
         function deleteDesa(nama) {
             if (confirm(`Apakah Anda yakin ingin menghapus desa "${nama}"? Data pada desa ini juga akan dihapus.`)) {
-                removeDesa(nama);
-                // Hapus data yang terkait dengan desa
-                localStorage.removeItem(`sipro_${nama}_padiSawahData`);
-                localStorage.removeItem(`sipro_${nama}_padiSawahTargets`);
-                localStorage.removeItem(`sipro_${nama}_padiSawahHistory`);
-                renderDesaList();
-                populateDesaSelector();
-                showToast(`Desa "${nama}" berhasil dihapus`, 'success');
+                try {
+                    // Remove from desa list first
+                    removeDesa(nama);
+                    
+                    // Hapus semua storage terkait dengan desa yang dihapus
+                    safeRemoveStorageItem(`sipro_${nama}_padiSawahData`);
+                    safeRemoveStorageItem(`sipro_${nama}_padiSawahTargets`);
+                    safeRemoveStorageItem(`sipro_${nama}_padiSawahHistory`);
+                    safeRemoveStorageItem(`sipro_${nama}_padiSawahNotifLog`);
+                    safeRemoveStorageItem(`sipro_${nama}_autoBackup`);
+
+                    // Jika desa yang dihapus adalah desa aktif, pilih fallback desa dan reload data
+                    const current = getCurrentDesa();
+                    if (current === nama) {
+                        const all = getAllDesa();
+                        const fallback = (all.length && all[0]) ? all[0] : '';
+                        setCurrentDesa(fallback);
+                        
+                        // Update selector DOM langsung
+                        const selector = document.getElementById('desaSelector');
+                        if (selector && fallback) {
+                            selector.value = fallback;
+                        }
+                        
+                        // Load dataStore dari desa fallback (atau kosong jika tidak ada desa)
+                        if (fallback) {
+                            const newData = getManagedStorageItem(getStorageKey('padiSawahData'), '{}');
+                            dataStore = newData ? JSON.parse(newData) : {};
+                        } else {
+                            dataStore = {};
+                        }
+                        window.dataStore = dataStore;
+                        
+                        // Re-render semua tampilan
+                        populateFilters();
+                        renderTable();
+                        updateStats();
+
+                        if (fallback) {
+                            showToast(`Desa "${nama}" dihapus. Beralih ke desa "${fallback}".`, 'success');
+                        } else {
+                            showToast(`Desa "${nama}" berhasil dihapus. Daftar desa sekarang kosong.`, 'success');
+                        }
+                    } else {
+                        showToast(`Desa "${nama}" berhasil dihapus`, 'success');
+                    }
+
+                    renderDesaList();
+                    populateDesaSelector();
+                } catch (err) {
+                    console.error('[deleteDesa] Error:', err);
+                    showToast(`❌ Error menghapus desa: ${err.message}`, 'error');
+                }
             }
         }
         
-        function populateDesaSelector() {
+        function populateDesaSelector(options = {}) {
+            const { keepBlankSelection = false } = options;
             const selector = document.getElementById('desaSelector');
             if (!selector) return;
             const allDesa = getAllDesa();
-            const currentDesa = getCurrentDesa();
-            selector.innerHTML = allDesa.map(desa => `<option value="${desa}" ${currentDesa === desa ? 'selected' : ''}>${desa}</option>`).join('');
+
+            if (allDesa.length === 0) {
+                selector.innerHTML = '<option value="">(Tidak ada desa)</option>';
+                selector.value = '';
+                selector.disabled = true;
+                setCurrentDesa('');
+                const headerEmpty = document.getElementById('desaNamaHeader');
+                if (headerEmpty) headerEmpty.textContent = '-';
+                return;
+            }
+
+            selector.disabled = false;
+            let currentDesa = getCurrentDesa();
+            if (!currentDesa && allDesa.length > 0 && !keepBlankSelection) {
+                currentDesa = allDesa[0];
+                setCurrentDesa(currentDesa);
+            }
+            selector.innerHTML = `${keepBlankSelection ? '<option value="">(Pilih Desa)</option>' : ''}${allDesa.map(desa => `<option value="${desa}" ${currentDesa === desa ? 'selected' : ''}>${desa}</option>`).join('')}`;
+            selector.value = currentDesa || '';
+            if (keepBlankSelection && !currentDesa) {
+                const headerEmpty = document.getElementById('desaNamaHeader');
+                if (headerEmpty) headerEmpty.textContent = '-';
+            }
             
-            // Remove previous event listener to prevent duplicate listeners
-            selector.onchange = null;
-            
-            // Add new event listener
-            selector.addEventListener('change', function(e) {
-                if (this.value && this.value !== currentDesa) {
-                    switchDesa(this.value);
+            // Store handler untuk reference nanti (bisa di-remove)
+            const desaChangeHandler = function(e) {
+                const selectedDesa = this.value;
+                const activeDesa = getCurrentDesa(); // Baca real-time
+                console.log(`[desaSelector] onChange: selected=${selectedDesa}, active=${activeDesa}`);
+                if (selectedDesa && selectedDesa !== activeDesa) {
+                    console.log(`[desaSelector] Switching dari ${activeDesa} ke ${selectedDesa}`);
+                    switchDesa(selectedDesa);
                 }
-            }, { once: false });
+            };
+
+            // Hapus listener lama jika ada agar tidak dobel
+            if (selector._desaChangeHandler) {
+                selector.removeEventListener('change', selector._desaChangeHandler);
+            }
+
+            // Attach listener baru dan simpan reference
+            selector.addEventListener('change', desaChangeHandler);
+            selector._desaChangeHandler = desaChangeHandler;
             
             // Update header dengan nama desa
             const header = document.getElementById('desaNamaHeader');
@@ -1152,13 +1570,85 @@ tfoot td {
                 header.textContent = currentDesa;
             }
         }
+
+        // === Onboarding helpers ===
+        function openOnboardingModal() {
+            const modal = document.getElementById('onboardingModal');
+            const input = document.getElementById('onboardingDesaName');
+            if (!modal) return;
+            modal.style.display = 'block';
+            if (input) {
+                input.value = '';
+                input.focus();
+                const btn = document.getElementById('onboardingCreateBtn');
+                if (btn) btn.disabled = true;
+                // enable create when non-empty
+                input.removeEventListener('input', input.__onboardHandler);
+                input.__onboardHandler = function() {
+                    const ok = String(this.value || '').trim().length > 0;
+                    if (btn) btn.disabled = !ok;
+                };
+                input.addEventListener('input', input.__onboardHandler);
+                // support Enter key to submit
+                input.removeEventListener('keypress', input.__onboardKeyHandler);
+                input.__onboardKeyHandler = function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        const ok = String(this.value || '').trim().length > 0;
+                        if (ok) createDesaFromOnboarding();
+                    }
+                };
+                input.addEventListener('keypress', input.__onboardKeyHandler);
+            }
+        }
+
+        function closeOnboardingModal() {
+            const modal = document.getElementById('onboardingModal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        function createDesaFromOnboarding() {
+            const input = document.getElementById('onboardingDesaName');
+            if (!input) return;
+            let nama = String(input.value || '').trim();
+            if (!nama) {
+                showToast('Nama desa tidak boleh kosong.', 'error');
+                return;
+            }
+            // Prevent duplicates (case-insensitive)
+            const all = getAllDesa();
+            const exists = all.some(d => String(d || '').toLowerCase() === nama.toLowerCase());
+            if (exists) {
+                showToast('Nama desa sudah ada.', 'warning');
+                // If already exists, just switch to it
+                const found = all.find(d => String(d || '').toLowerCase() === nama.toLowerCase());
+                if (found) setCurrentDesa(found);
+                closeOnboardingModal();
+                refreshUIAfterDesaChange({ resetFilters: true });
+                return;
+            }
+            // Normalize name: capitalize first letters
+            nama = nama.split(/\s+/).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+            addDesa(nama);
+            setCurrentDesa(nama);
+            closeOnboardingModal();
+            refreshUIAfterDesaChange({ resetFilters: true });
+            showToast(`✅ Desa "${nama}" dibuat dan dipilih.`, 'success');
+        }
+
+        function showOnboardingIfNoDesa() {
+            const all = getAllDesa();
+            if (!Array.isArray(all) || all.length === 0) {
+                openOnboardingModal();
+            }
+        }
         
-        window.onclick = function(event) {
+        window.addEventListener('click', function(event) {
             const editUserModal = document.getElementById('editUserModal');
             const manageDesaModal = document.getElementById('manageDesaModal');
             if (event.target === editUserModal) editUserModal.style.display = 'none';
             if (event.target === manageDesaModal) manageDesaModal.style.display = 'none';
-        }
+        });
         
         </script>
     <div id="toast" class="toast" style="display:none"></div>
@@ -1179,6 +1669,23 @@ tfoot td {
             <div style="display:flex;gap:10px;justify-content:flex-end;">
                 <button onclick="closeEditUserModal()" style="padding:10px 20px;background:#e6ebf0;color:#2c3e50;border:none;border-radius:6px;cursor:pointer;font-weight:600;font-size:13px;transition:all 0.2s;">Batal</button>
                 <button onclick="saveNamaPengguna()" style="padding:10px 20px;background:linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:600;font-size:13px;transition:all 0.2s;">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Onboarding Modal: buat desa pertama jika belum ada desa sama sekali -->
+    <div id="onboardingModal" class="modal" style="display:none;">
+        <div class="modal-content" style="max-width:520px;">
+            <span class="close" onclick="closeOnboardingModal()">&times;</span>
+            <h2 style="margin-top:0;display:flex;align-items:center;gap:8px;"><span style="font-size:22px;">🏡</span> Buat Desa Pertama</h2>
+            <div style="background:#f8f9fa;padding:18px;border-radius:8px;margin-bottom:12px;">
+                <div style="margin-bottom:8px;font-size:14px;color:#333;">Sepertinya belum ada desa. Silakan buat desa pertama untuk mulai menyimpan data.</div>
+                <label style="display:block;font-weight:700;margin-bottom:6px;color:#34495e;">Nama Desa</label>
+                <input type="text" id="onboardingDesaName" placeholder="Masukkan nama desa (mis. Semumu)" style="width:100%;padding:10px;border:2px solid #ddd;border-radius:6px;font-size:14px;box-sizing:border-box;">
+                <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end;">
+                    <button class="btn btn-ghost" onclick="closeOnboardingModal()">Batal</button>
+                    <button class="btn btn-primary" id="onboardingCreateBtn" onclick="createDesaFromOnboarding()">Buat Desa</button>
+                </div>
             </div>
         </div>
     </div>
@@ -1367,6 +1874,9 @@ tfoot td {
 
             <!-- Form Input -->
             <div class="form-section">
+                <div style="background:#fff3cd;border:1px solid #ffc107;border-radius:6px;padding:10px 12px;margin-bottom:12px;font-size:13px;color:#856404;">
+                    <strong>Desa Aktif:</strong> <span id="activeDesaDisplay" style="font-weight:700;">-</span>
+                </div>
                 <h2>Input Data Harian</h2>
                 <form id="inputForm">
                     <div class="form-grid">
@@ -1409,7 +1919,7 @@ tfoot td {
                     <div>
                         <button type="submit" class="btn btn-primary">💾 Simpan Data</button>
                         <button type="button" class="btn btn-secondary" onclick="resetForm()">🔄 Reset Form</button>
-                        <button type="button" class="btn btn-danger" onclick="clearAllData()">🗑️ Hapus Semua Data</button>
+                        <button type="button" class="btn btn-danger" onclick="clearAllData()">🗑️ Hapus Semua Data Desa Ini</button>
                     </div>
                 </form>
             </div>
@@ -1587,14 +2097,22 @@ tfoot td {
                                                 let allDesa = JSON.parse(allDesaStr);
                                                 if (!allDesa.includes(desaFromBackup)) {
                                                     allDesa.push(desaFromBackup);
-                                                    localStorage.setItem('sipro_allDesa', JSON.stringify(allDesa));
+                                                    safeSetStorageItem('sipro_allDesa', JSON.stringify(allDesa), 'daftar desa');
                                                 }
                                                 
                                                 // Restore data ke desa yang sesuai (dari file backup)
                                                 const desaStorageKey_data = `sipro_${desaFromBackup}_padiSawahData`;
                                                 const desaStorageKey_targets = `sipro_${desaFromBackup}_padiSawahTargets`;
-                                                localStorage.setItem(desaStorageKey_data, data.padiSawahData);
-                                                localStorage.setItem(desaStorageKey_targets, data.padiSawahTargets);
+                                                const desaStorageKey_history = `sipro_${desaFromBackup}_padiSawahHistory`;
+                                                const desaStorageKey_notif = `sipro_${desaFromBackup}_padiSawahNotifLog`;
+                                                // Simpan JSON strings exactly as backup provides
+                                                safeSetStorageItem(desaStorageKey_data, data.padiSawahData, 'restore data', []);
+                                                safeSetStorageItem(desaStorageKey_targets, data.padiSawahTargets, 'restore target', []);
+                                                if (data.padiSawahHistory) safeSetStorageItem(desaStorageKey_history, data.padiSawahHistory, 'restore history', []);
+                                                if (data.padiSawahNotifLog) safeSetStorageItem(desaStorageKey_notif, data.padiSawahNotifLog, 'restore notifikasi', []);
+
+                                                dataStore = JSON.parse(data.padiSawahData);
+                                                syncDataStore();
                                                 
                                                 // Jika restore desa yang berbeda, switch ke desa tersebut
                                                 if (currentDesa !== desaFromBackup) {
@@ -1603,7 +2121,6 @@ tfoot td {
                                                     setTimeout(() => location.reload(), 1500);
                                                 } else {
                                                     // Jika restore desa yang sama, update tampilan tanpa reload
-                                                    window.dataStore = JSON.parse(data.padiSawahData);
                                                     if (typeof renderTable === 'function') renderTable();
                                                     if (typeof updateStats === 'function') updateStats();
                                                     if (typeof populateFilters === 'function') populateFilters();
@@ -1664,29 +2181,33 @@ tfoot td {
         Create by : GHOST SCRIPT Development Team KRC - 2026 | Versi 4.2.0 (Update Senin, 12 Mei 2026)<br>
         <span style="color:#1764d6;font-size:12px;"># supriantozero@gmail.com</span>
     </div>
-    <!-- SheetJS (XLSX) untuk ekspor Excel -->
-    <!-- jsPDF dan autoTable untuk ekspor PDF -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
-    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <!-- SheetJS/ jsPDF akan dimuat di bagian bawah sekali saja -->
     <script>
                         // --- FITUR RIWAYAT PERUBAHAN DATA ---
 // --- RIWAYAT NOTIFIKASI MODULAR ---
 // Variabel untuk melacak peringatan kapasitas log
 window.logWarningShown = false;
 function getHistoryLog() {
-    return JSON.parse(localStorage.getItem(getStorageKey('padiSawahHistory')) || '[]');
+    return JSON.parse(getManagedStorageItem(getStorageKey('padiSawahHistory'), '[]') || '[]');
 }
 function addHistoryLog(action, tanggal, before, after) {
     const MAX_LOG = 200;
     const WARNING_THRESHOLD = 180; // Peringatkan saat mendekati 90% kapasitas
     let log = getHistoryLog();
+
+    const stripTimestamp = (item) => {
+        if (!item || typeof item !== 'object') return item;
+        const cloned = { ...item };
+        delete cloned.timestamp;
+        return cloned;
+    };
+
     log.push({
         waktu: new Date().toISOString(),
         aksi: action,
         tanggal,
-        sebelum: before,
-        sesudah: after
+        sebelum: stripTimestamp(before),
+        sesudah: stripTimestamp(after)
     });
     // Potong log lama jika melebihi batas
     if (log.length > MAX_LOG) {
@@ -1701,15 +2222,15 @@ function addHistoryLog(action, tanggal, before, after) {
         window.logWarningShown = false;
     }
     try {
-        localStorage.setItem(getStorageKey('padiSawahHistory'), JSON.stringify(log));
+        safeSetStorageItem(getStorageKey('padiSawahHistory'), JSON.stringify(log), 'riwayat', []);
     } catch (e) {
         // Jika masih penuh, potong menjadi setengah
         log = log.slice(Math.floor(log.length / 2) * -1);
         try {
-            localStorage.setItem(getStorageKey('padiSawahHistory'), JSON.stringify(log));
+            safeSetStorageItem(getStorageKey('padiSawahHistory'), JSON.stringify(log), 'riwayat', []);
         } catch (e2) {
             // Terakhir: kosongkan log agar tidak menghalangi penggunaan
-            localStorage.removeItem(getStorageKey('padiSawahHistory'));
+            safeRemoveStorageItem(getStorageKey('padiSawahHistory'));
         }
     }
     updateNotifCount();
@@ -1739,7 +2260,7 @@ function showHistoryModal() {
 
     function renderTabRiwayatData() {
         // Selalu ambil data terbaru dari localStorage
-        const log = JSON.parse(localStorage.getItem((getStorageKey('padiSawahHistory'))) || '[]').slice().reverse();
+        const log = JSON.parse(getManagedStorageItem(getStorageKey('padiSawahHistory'), '[]') || '[]').slice().reverse();
         const tabContent = document.getElementById('tabContentRiwayat');
         if (log.length === 0) {
             tabContent.innerHTML = '<div style="color:#888;text-align:center;padding:32px 0;">Belum ada riwayat perubahan.</div>';
@@ -1848,16 +2369,9 @@ function getDiffFields(before, after) {
     });
     return diff;
 }
-function formatObj(obj) {
-    if (!obj || typeof obj !== 'object') return '-';
-    return Object.entries(obj).map(function(entry) {
-        var k = entry[0], v = entry[1];
-        return "<span style='display:inline-block;margin-right:8px;'><b>" + k + ":</b> " + v + "</span>";
-    }).join(' ');
-}
 function clearHistoryLog() {
     if (confirm('Hapus seluruh riwayat notifikasi?')) {
-        localStorage.removeItem(getStorageKey('padiSawahHistory'));
+        safeRemoveStorageItem(getStorageKey('padiSawahHistory'));
         // Hapus juga notifikasi prediksi hari ini dari window.dataStore
         let today = new Date();
         today.setHours(0,0,0,0);
@@ -1897,10 +2411,10 @@ function updateNotifCount() {
         notifCount.style.fontWeight = '700';
     }
 }
-window.onclick = function(event) {
+window.addEventListener('click', function(event) {
     const modal = document.getElementById('historyModal');
     if (event.target === modal) modal.style.display = 'none';
-}
+});
 document.addEventListener('DOMContentLoaded', function(){
     const notifBtn = document.getElementById('notifBtn');
     if (notifBtn) notifBtn.onclick = showHistoryModal;
@@ -1987,7 +2501,7 @@ document.addEventListener('DOMContentLoaded', function(){
                             timestamp: Date.now()
                         };
                     }
-                    localStorage.setItem(getStorageKey('padiSawahData'), JSON.stringify(window.dataStore));
+                    if (!saveCurrentDesaDataStore(window.dataStore, 'import data')) return;
                     showToast(`Import selesai: ${imported} data baru, ${updated} diperbarui, ${skipped} dilewati.`, 'success');
                     populateFilters();
                     updateStats();
@@ -2035,91 +2549,16 @@ document.addEventListener('DOMContentLoaded', function(){
         }
                         // Dropdown export data
 
-                        // ...existing code...
-                        function exportToPDF() {
-                            const monthSel = document.getElementById('filterMonthSelect');
-                            const yearSel = document.getElementById('filterYearSelect');
-                            if (!(monthSel && yearSel && monthSel.value && yearSel.value)) {
-                                alert('Pilih bulan dan tahun terlebih dahulu untuk ekspor data.');
-                                return;
-                            }
-                            const y = yearSel.value;
-                            const m = monthSel.value;
-                            const daysInMonth = new Date(y, m, 0).getDate();
-                            const header = ['Tanggal','Panen Real','Panen Prediksi','Bera Real','Bera Prediksi','Olah Tanah Real','Olah Tanah Prediksi','Tambah Tanam Real','Tambah Tanam Prediksi','Total Real'];
-                            const body = [];
-                            for (let d = 1; d <= daysInMonth; d++) {
-                                // Bulan pada string tanggal harus 2 digit dan konsisten dengan dataStore (format YYYY-MM-DD)
-                                const dateStr = `${yearNum}-${String(monthNum).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-                                // Ambil hanya satu data per tanggal (jika ada duplikat, ambil yang terakhir)
-                                const data = dataStore[dateStr] || { luasPanen:0, luasTambahTanam:0, lahanBera:0, lahanOlahTanah:0 };
-                                // Validasi angka
-                                const panen = isFinite(Number(data.luasPanen)) ? Number(data.luasPanen) : 0;
-                                const tanam = isFinite(Number(data.luasTambahTanam)) ? Number(data.luasTambahTanam) : 0;
-                                const bera = isFinite(Number(data.lahanBera)) ? Number(data.lahanBera) : 0;
-                                const olah = isFinite(Number(data.lahanOlahTanah)) ? Number(data.lahanOlahTanah) : 0;
-                                realPanen += panen;
-                                realTanam += tanam;
-                                realBera += bera;
-                                debugOlah.push({tanggal: dateStr, olahTanah: olah});
-                                realOlah += olah;
-                                const p = calculatePredictions(dateStr);
-                                predPanen += Number(p.luasPanen) || 0;
-                                predTanam += Number(p.luasTambahTanam) || 0;
-                                predBera += Number(p.lahanBera) || 0;
-                                predOlah += Number(p.lahanOlahTanah) || 0;
-                            }
-                            const target = loadMonthlyTarget(y, m);
-                            let summary = [
-                                ['Ringkasan Bulan', y + '-' + m],
-                                ['Item','Nilai (Ha)'],
-                                ['Target Panen', formatValue(target.targetPanen||0)],
-                                ['Realisasi Panen', formatValue(totals.realPanen)],
-                                ['Prediksi Panen', formatValue(totals.predPanen)],
-                                ['Sisa Panen', formatValue((target.targetPanen||0)-totals.realPanen)],
-                                ['%Capaian Panen', target.targetPanen? formatValue(totals.realPanen/target.targetPanen*100) : '-'],
-                                [],
-                                ['Target Tanam', formatValue(target.targetTanam||0)],
-                                ['Realisasi Tanam', formatValue(totals.realTanam)],
-                                ['Prediksi Tanam', formatValue(totals.predTanam)],
-                                ['Sisa Tanam', formatValue((target.targetTanam||0)-totals.realTanam)],
-                                ['%Capaian Tanam', target.targetTanam? formatValue(totals.realTanam/target.targetTanam*100) : '-']
-                            ];
-                            // jsPDF
-                            const { jsPDF } = window.jspdf;
-                            const doc = new jsPDF({ orientation: 'landscape' });
-                            doc.setFontSize(14);
-                            doc.text('Laporan Data dan Prediksi Bulanan', 14, 14);
-                            doc.text(`Bulan: ${monthSel.options[monthSel.selectedIndex].text} ${y}`, 14, 22);
-                            doc.autoTable({
-                                head: [header],
-                                body: body,
-                                startY: 30,
-                                styles: { fontSize: 10, halign: 'center', valign: 'middle', lineColor: [44,62,80], lineWidth: 0.2 },
-                                headStyles: { fillColor: [44,62,80], textColor: 255, fontStyle: 'bold', halign: 'center', lineWidth: 0.5 },
-                                tableLineColor: [44,62,80],
-                                tableLineWidth: 0.2,
-                                theme: 'grid',
-                            });
-                            let ySummary = doc.lastAutoTable.finalY + 10;
-                            doc.autoTable({
-                                body: summary,
-                                startY: ySummary,
-                                styles: { fontSize: 10, halign: 'left', lineColor: [44,62,80], lineWidth: 0.2 },
-                                theme: 'grid',
-                                tableLineColor: [44,62,80],
-                                tableLineWidth: 0.2,
-                                head: [],
-                            });
-                            doc.save(`laporan-padi-sawah-${y}-${m}.pdf`);
-                        }
+                        // (fungsi exportToPDF yang benar akan didefinisikan pada bagian bawah file sekali saja)
                 // Backup data ke file JSON
                 function backupData() {
                     const desa = getCurrentDesa();
                     const data = {
                         desaName: desa,  // TAMBAH: Simpan nama desa di dalam file backup
-                        padiSawahData: localStorage.getItem(getStorageKey('padiSawahData')) || '{}',
-                        padiSawahTargets: localStorage.getItem(getStorageKey('padiSawahTargets')) || '{}'
+                            padiSawahData: getManagedStorageItem(getStorageKey('padiSawahData'), '{}'),
+                            padiSawahTargets: getManagedStorageItem(getStorageKey('padiSawahTargets'), '{}'),
+                            padiSawahHistory: getManagedStorageItem(getStorageKey('padiSawahHistory'), '[]'),
+                            padiSawahNotifLog: getManagedStorageItem(getStorageKey('padiSawahNotifLog'), '[]')
                     };
                     const now = new Date();
                     const pad = n => n.toString().padStart(2, '0');
@@ -2136,7 +2575,7 @@ document.addEventListener('DOMContentLoaded', function(){
                 }
         // Initialize
 
-        let dataStore = JSON.parse(localStorage.getItem(getStorageKey('padiSawahData')) || '{}');
+        let dataStore = {};
         window.dataStore = dataStore;
         // Proxy agar window.dataStore selalu sinkron
         function syncDataStore() {
@@ -2155,14 +2594,14 @@ document.addEventListener('DOMContentLoaded', function(){
                 
                 const data = {
                     desaName: desa,
-                    padiSawahData: localStorage.getItem(getStorageKey('padiSawahData')) || '{}',
-                    padiSawahTargets: localStorage.getItem(getStorageKey('padiSawahTargets')) || '{}',
+                    padiSawahData: getManagedStorageItem(getStorageKey('padiSawahData'), '{}'),
+                    padiSawahTargets: getManagedStorageItem(getStorageKey('padiSawahTargets'), '{}'),
                     timestamp: Date.now(),
                     autoBackup: true
                 };
                 
                 // Simpan auto-backup ke localStorage
-                localStorage.setItem(autoBackupKey, JSON.stringify(data));
+                safeSetStorageItem(autoBackupKey, JSON.stringify(data), 'auto-backup');
                 console.log(`[autoBackup] Auto-backup desa "${desa}" berhasil disimpan`);
                 
             } catch (err) {
@@ -2214,7 +2653,7 @@ document.addEventListener('DOMContentLoaded', function(){
                     redoStack.push(JSON.stringify(dataStore));
                     dataStore = JSON.parse(undoStack.pop());
                     window.dataStore = dataStore;
-                    localStorage.setItem((getStorageKey('padiSawahData')), JSON.stringify(dataStore));
+                    if (!saveCurrentDesaDataStore(dataStore, 'undo perubahan data')) return;
                     renderTable();
                     updateStats();
                     showToast('Undo perubahan data.', 'success');
@@ -2228,7 +2667,7 @@ document.addEventListener('DOMContentLoaded', function(){
                     undoStack.push(JSON.stringify(dataStore));
                     dataStore = JSON.parse(redoStack.pop());
                     window.dataStore = dataStore;
-                    localStorage.setItem((getStorageKey('padiSawahData')), JSON.stringify(dataStore));
+                    if (!saveCurrentDesaDataStore(dataStore, 'redo perubahan data')) return;
                     renderTable();
                     updateStats();
                     showToast('Redo perubahan data.', 'success');
@@ -2248,23 +2687,31 @@ document.addEventListener('DOMContentLoaded', function(){
         document.getElementById('tanggal').value = `${yyyy}-${mm}-${dd}`;
 
         // Load data saat halaman dimuat
-        window.addEventListener('load', () => {
+        window.addEventListener('load', async () => {
+            await ensureLargeStorageReady();
+
+            const initialDataRaw = getManagedStorageItem(getStorageKey('padiSawahData'), '{}');
+            dataStore = initialDataRaw ? JSON.parse(initialDataRaw) : {};
+            syncDataStore();
+
             // Update nama pengguna terlebih dahulu (sebelum semua yang lain)
             updateNamaPenggunaDisplay();
-            populateDesaSelector();
-            populateFilters();
-            initTopTargetMenu();
+            refreshUIAfterDesaChange({ resetFilters: false });
+            // Jika belum ada desa sama sekali, munculkan onboarding untuk buat desa pertama
+            try { showOnboardingIfNoDesa(); } catch (e) { /* ignore if function missing */ }
             initUndoRedoListeners();  // Initialize undo/redo listeners SEKALI SAJA
-            renderTable();
-            updateStats();
             setShowAllButtonLabel();
             // Mulai auto-backup setiap 1 jam
             startAutoBackupInterval();
             // attach toggle handler to button (moved position)
             const btn = document.getElementById('btnShowAll');
-            if (btn) btn.addEventListener('click', function(){ toggleShowAll(); setShowAllButtonLabel();
-            // Mulai auto-backup setiap 1 jam
-            startAutoBackupInterval(); });
+            if (btn && !btn.__toggleShowAllHandler) {
+                btn.__toggleShowAllHandler = function() {
+                    toggleShowAll();
+                    setShowAllButtonLabel();
+                };
+                btn.addEventListener('click', btn.__toggleShowAllHandler);
+            }
 
             // Tampilkan notifikasi hari ini saat aplikasi dibuka
             const today = new Date();
@@ -2274,8 +2721,8 @@ document.addEventListener('DOMContentLoaded', function(){
             const todayStr = `${yyyy}-${mm}-${dd}`;
                 let dataStoreToday = {};
                 let notif = [];
-                if (localStorage.getItem(getStorageKey('padiSawahData'))) {
-                    dataStoreToday = JSON.parse(localStorage.getItem(getStorageKey('padiSawahData')));
+                if (initialDataRaw) {
+                    dataStoreToday = JSON.parse(initialDataRaw);
                     if (dataStoreToday[todayStr]) {
                         notif.push('<b>Data untuk hari ini sudah ada!</b>');
                     } else {
@@ -2298,17 +2745,6 @@ document.addEventListener('DOMContentLoaded', function(){
                 }
                 showToast(notif.join('<br>'), 'success', 4500);
         });
-
-        function clearFilters() {
-            const month = document.getElementById('filterMonthSelect');
-            const year = document.getElementById('filterYearSelect');
-            if (month) month.value = '';
-            if (year) year.value = '';
-            renderTable();
-            setShowAllButtonLabel();
-            // Mulai auto-backup setiap 1 jam
-            startAutoBackupInterval();
-        }
 
         function setShowAllButtonLabel() {
             const btn = document.getElementById('btnShowAll');
@@ -2372,34 +2808,37 @@ document.addEventListener('DOMContentLoaded', function(){
 
         function saveData() {
             try {
+                if (!ensureActiveDesa('menyimpan data')) return;
+
                 // Deklarasi notifLog
                 let notifLog = [];
-                
+
                 // --- VALIDASI LANJUTAN DATA ---
                 const tanggal = document.getElementById('tanggal').value;
-                
+
                 // Validasi tanggal tidak boleh kosong
                 if (!tanggal) {
                     showToast('⚠️ Tanggal wajib diisi.', 'warning');
                     return;
                 }
-                
+
                 // Validasi format tanggal
                 if (!tanggal.match(/^\d{4}-\d{2}-\d{2}$/)) {
                     showToast('⚠️ Format tanggal tidak valid (YYYY-MM-DD).', 'error');
                     return;
                 }
-                
+
                 // Validasi tanggal tidak boleh di masa depan
                 const inputDate = new Date(tanggal);
                 const today = new Date();
-                today.setHours(0,0,0,0);
-                inputDate.setHours(0,0,0,0);
-                
+                today.setHours(0, 0, 0, 0);
+                inputDate.setHours(0, 0, 0, 0);
+
                 if (inputDate > today) {
                     showToast('⚠️ Tanggal tidak boleh di masa depan.', 'error');
                     return;
                 }
+
                 // Validasi duplikasi data dengan warning yang jelas
                 if (dataStore[tanggal]) {
                     if (!confirm(`📌 Data untuk tanggal ${tanggal} sudah ada.\n\nApakah Anda ingin menimpa data tersebut?`)) {
@@ -2407,19 +2846,19 @@ document.addEventListener('DOMContentLoaded', function(){
                         return;
                     }
                 }
-                
+
                 // Validasi nilai numerik
                 const luasPanen = parseFloat(document.getElementById('luasPanen').value) || 0;
                 const lahanBera = parseFloat(document.getElementById('lahanBera').value) || 0;
                 const lahanOlahTanah = parseFloat(document.getElementById('lahanOlahTanah').value) || 0;
                 const luasTambahTanam = parseFloat(document.getElementById('luasTambahTanam').value) || 0;
-                
+
                 // Validasi nilai tidak negatif
                 if (luasPanen < 0 || lahanBera < 0 || lahanOlahTanah < 0 || luasTambahTanam < 0) {
                     showToast('⚠️ Nilai tidak boleh negatif.', 'error');
                     return;
                 }
-                
+
                 // Validasi minimal ada satu nilai yang diisi
                 const totalLuas = luasPanen + lahanBera + lahanOlahTanah + luasTambahTanam;
                 if (totalLuas === 0) {
@@ -2427,18 +2866,19 @@ document.addEventListener('DOMContentLoaded', function(){
                         return;
                     }
                 }
+
                 // Validasi kelengkapan jika gagal panen/tunda tanam
                 const gagalPanen = document.getElementById('gagalPanen').checked;
                 const tundaTanam = document.getElementById('tundaTanam').checked;
                 const tanggalTanamBaru = document.getElementById('tanggalTanamBaru').value;
                 const alasanGagalPanen = document.getElementById('alasanGagalPanen').value || '';
                 const alasanTundaTanam = document.getElementById('alasanTundaTanam').value || '';
-                
+
                 if (gagalPanen && !alasanGagalPanen.trim()) {
                     showToast('⚠️ Alasan gagal panen wajib diisi jika gagal panen di-check.', 'error');
                     return;
                 }
-                
+
                 if (tundaTanam) {
                     if (!alasanTundaTanam.trim()) {
                         showToast('⚠️ Alasan tunda tanam wajib diisi.', 'error');
@@ -2449,48 +2889,24 @@ document.addEventListener('DOMContentLoaded', function(){
                         return;
                     }
                 }
-            // ...existing code...
-                 const file = event && event.target && event.target.files ? event.target.files[0] : undefined;
-                 if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        try {
-                            const json = JSON.parse(e.target.result);
-                            if (json.padiSawahData && json.padiSawahTargets) {
-                                localStorage.setItem((getStorageKey('padiSawahData')), json.padiSawahData);
-                                localStorage.setItem((getStorageKey('padiSawahTargets')), json.padiSawahTargets);
-                                syncDataStore();
-                                showToast('Data berhasil direstore!', 'success');
-                                renderTable();
-                                updateStats();
-                                populateFilters();
-                            } else {
-                                alert('File backup tidak valid.');
-                            }
-                        } catch (err) {
-                            alert('Gagal membaca file backup: ' + err);
-                        }
-                    };
-                    reader.readAsText(file);
-                    // Reset input agar bisa upload file yang sama lagi jika perlu
-                    event.target.value = '';
-                    }
+
                 const pred = calculatePredictions(tanggal);
                 if (pred.luasPanen > 0 || pred.lahanBera > 0 || pred.lahanOlahTanah > 0 || pred.luasTambahTanam > 0) {
-                notifLog.push({
-                    tanggal: tanggal,
-                    prediksi: {
-                        luasPanen: pred.luasPanen,
-                        lahanBera: pred.lahanBera,
-                        lahanOlahTanah: pred.lahanOlahTanah,
-                        luasTambahTanam: pred.luasTambahTanam
-                    },
-                    waktu: Date.now()
-                });
-            }
+                    notifLog.push({
+                        tanggal: tanggal,
+                        prediksi: {
+                            luasPanen: pred.luasPanen,
+                            lahanBera: pred.lahanBera,
+                            lahanOlahTanah: pred.lahanOlahTanah,
+                            luasTambahTanam: pred.luasTambahTanam
+                        },
+                        waktu: Date.now()
+                    });
+                }
+
                 // Save notification log
-                localStorage.setItem((getStorageKey('padiSawahNotifLog')), JSON.stringify(notifLog));
-                
+                saveCurrentDesaRaw('padiSawahNotifLog', JSON.stringify(notifLog), 'menyimpan notifikasi');
+
                 // Update dataStore dengan data input
                 dataStore[tanggal] = {
                     luasPanen,
@@ -2505,27 +2921,27 @@ document.addEventListener('DOMContentLoaded', function(){
                     timestamp: Date.now()
                 };
                 window.dataStore = dataStore;
-                localStorage.setItem((getStorageKey('padiSawahData')), JSON.stringify(dataStore));
-                
+                if (!saveCurrentDesaDataStore(dataStore, 'menyimpan data harian')) return;
+
                 // Tampilkan notifikasi berdasarkan tanggal
                 const todayCheck = new Date();
                 const inputDateCheck = new Date(tanggal);
-                todayCheck.setHours(0,0,0,0);
-                inputDateCheck.setHours(0,0,0,0);
-                
+                todayCheck.setHours(0, 0, 0, 0);
+                inputDateCheck.setHours(0, 0, 0, 0);
+
                 if (inputDateCheck.getTime() === todayCheck.getTime()) {
                     showToast('✅ Data untuk hari ini berhasil disimpan!', 'success');
                 } else {
                     showToast('✅ Data berhasil disimpan!', 'success');
                 }
-                
+
                 // Trigger auto-backup setelah save
                 autoBackupData();
                 resetForm();
                 populateFilters();
                 updateStats();
                 renderTable();
-                
+
             } catch (err) {
                 console.error('[saveData] Error:', err);
                 showToast(`❌ Terjadi kesalahan saat menyimpan: ${err.message}`, 'error');
@@ -2558,7 +2974,7 @@ document.addEventListener('DOMContentLoaded', function(){
             if (confirm('Apakah Anda yakin ingin menghapus data tanggal ' + formatDate(tanggal) + '?')) {
                 const before = dataStore[tanggal] ? { ...dataStore[tanggal] } : null;
                 delete dataStore[tanggal];
-                localStorage.setItem((getStorageKey('padiSawahData')), JSON.stringify(dataStore));
+                if (!saveCurrentDesaDataStore(dataStore, 'menghapus data')) return;
                 addHistoryLog('Hapus', tanggal, before, null);
                 populateFilters();
                 renderTable();
@@ -2570,16 +2986,83 @@ document.addEventListener('DOMContentLoaded', function(){
         }
 
         function clearAllData() {
-            const desa = getCurrentDesa();
+            const selector = document.getElementById('desaSelector');
+            const selectedDesa = selector && selector.value ? selector.value.trim() : '';
+            const desa = selectedDesa || getCurrentDesa();
+
+            if (!desa) {
+                showToast('Tidak ada desa aktif. Tambahkan atau pilih desa terlebih dahulu.', 'warning');
+                return;
+            }
+
+            // Sinkronkan localStorage dengan desa aktif di UI sebelum proses hapus
+            if (desa && desa !== getCurrentDesa()) {
+                setCurrentDesa(desa);
+            }
+
             if (confirm(`🗑️ Apakah Anda yakin ingin menghapus SEMUA data dari desa "${desa}"?\n\nTindakan ini TIDAK DAPAT DIBATALKAN dan akan menghapus seluruh riwayat data padi sawah.`)) {
                 if (confirm(`⚠️ Konfirmasi sekali lagi:\n\nHapus semua data desa "${desa}"?\n\nJangan lupa lakukan backup terlebih dahulu!`)) {
-                    dataStore = {};
-                    window.dataStore = dataStore;
-                    localStorage.setItem((getStorageKey('padiSawahData')), JSON.stringify(dataStore));
-                    populateFilters();
-                    renderTable();
-                    updateStats();
-                    showToast(`✅ Semua data desa "${desa}" berhasil dihapus!`, 'success');
+                    try {
+                        // Clear dataStore
+                        dataStore = {};
+                        window.dataStore = dataStore;
+                        undoStack = [];
+                        redoStack = [];
+                        editingDate = null;
+                        
+                        // Hapus SEMUA data terkait desa dari localStorage
+                        if (desa) {
+                            safeRemoveStorageItem(getStorageKey('padiSawahData'));
+                            safeRemoveStorageItem(getStorageKey('padiSawahTargets'));
+                            safeRemoveStorageItem(getStorageKey('padiSawahHistory'));
+                            safeRemoveStorageItem(getStorageKey('padiSawahNotifLog'));
+                            safeRemoveStorageItem(getStorageKey('autoBackup'));
+                        }
+
+                        // Hapus nama desa dari daftar desa sehingga tidak muncul lagi di selector
+                        try {
+                            removeDesa(desa);
+                            // Jika desa yang dihapus adalah desa aktif, kosongkan desa aktif
+                            if (getCurrentDesa() === desa) setCurrentDesa('');
+                        } catch (e) {
+                            console.error('[clearAllData] Gagal menghapus nama desa dari daftar:', e);
+                        }
+                        
+                        // Reset seluruh tampilan dan state turunan
+                        const monthSel = document.getElementById('filterMonthSelect');
+                        const yearSel = document.getElementById('filterYearSelect');
+                        const topMonth = document.getElementById('targetMonthTop');
+                        const topYear = document.getElementById('targetYearTop');
+                        const timelineMonth = document.getElementById('timelineMonth');
+                        const timelineYear = document.getElementById('timelineYear');
+                        const monthlyTargetPanenTop = document.getElementById('monthlyTargetPanenTop');
+                        const monthlyTargetTanamTop = document.getElementById('monthlyTargetTanamTop');
+
+                        if (monthSel) monthSel.value = '';
+                        if (yearSel) yearSel.value = '';
+                        if (topMonth) topMonth.value = '';
+                        if (topYear) topYear.value = '';
+                        if (timelineMonth) timelineMonth.value = '';
+                        if (timelineYear) timelineYear.value = '';
+                        if (monthlyTargetPanenTop) monthlyTargetPanenTop.value = '';
+                        if (monthlyTargetTanamTop) monthlyTargetTanamTop.value = '';
+
+                        populateFilters({ keepBlank: true });
+                        if (typeof initTopTargetMenu === 'function') initTopTargetMenu();
+                        if (typeof populateTimelineFilters === 'function') populateTimelineFilters();
+                        if (typeof renderTimelineList === 'function') renderTimelineList();
+                        if (typeof updatePrintInfo === 'function') updatePrintInfo();
+                        if (typeof setShowAllButtonLabel === 'function') setShowAllButtonLabel();
+                        if (typeof populateDesaSelector === 'function') populateDesaSelector({ keepBlankSelection: true });
+                        renderMonthlySummary(null, null);
+                        renderTableFooter(null, null);
+                        renderTable();
+                        updateStats();
+                        showToast(`✅ Semua data desa "${desa}" berhasil dihapus!`, 'success');
+                    } catch (err) {
+                        console.error('[clearAllData] Error:', err);
+                        showToast(`❌ Terjadi kesalahan saat menghapus data: ${err.message}`, 'error');
+                    }
                 } else {
                     showToast('Batal menghapus semua data.', 'warning');
                 }
@@ -2835,7 +3318,9 @@ document.addEventListener('DOMContentLoaded', function(){
                         let after = { ...currentStore[date] };
                         // Tambahkan ke riwayat notifikasi
                         addHistoryLog('Edit (Tabel)', date, before, after);
-                        localStorage.setItem((getStorageKey('padiSawahData')), JSON.stringify(currentStore));
+                        if (!saveCurrentDesaDataStore(currentStore, 'mengedit data tabel')) {
+                            return;
+                        }
                         // Sinkronkan ke dataStore lokal dan window.dataStore
                         dataStore = currentStore;
                         syncDataStore();
@@ -2856,11 +3341,7 @@ document.addEventListener('DOMContentLoaded', function(){
                     `;
                     document.head.appendChild(style);
                 });
-                // Undo/Redo logic - HANYA UPDATE STATUS, LISTENERS SUDAH DI-SETUP DI INIT
-                function updateUndoRedoStatus() {
-                    const status = document.getElementById('undoRedoStatus');
-                    if (status) status.textContent = `Undo: ${undoStack.length} | Redo: ${redoStack.length}`;
-                }
+                // Undo/Redo status update (listeners sudah di-setup di init)
                 updateUndoRedoStatus();
             });
             updatePrintInfo();
@@ -2884,7 +3365,8 @@ document.addEventListener('DOMContentLoaded', function(){
             }
         }
 
-        function populateFilters() {
+        function populateFilters(options = {}) {
+            const { keepBlank = false } = options;
             const monthSelect = document.getElementById('filterMonthSelect');
             const yearSelect = document.getElementById('filterYearSelect');
             const monthTop = document.getElementById('targetMonthTop');
@@ -2926,14 +3408,21 @@ document.addEventListener('DOMContentLoaded', function(){
             if (yearTop) yearTop.innerHTML = yearSelect.innerHTML;
 
             // Set defaults to current month/year if not already set (guard when elements exist)
-            if (monthSelect && typeof monthSelect.value !== 'undefined' && !monthSelect.value) {
+            if (!keepBlank && monthSelect && typeof monthSelect.value !== 'undefined' && !monthSelect.value) {
                 monthSelect.value = String(now.getMonth() + 1).padStart(2, '0');
             }
-            if (yearSelect && typeof yearSelect.value !== 'undefined' && !yearSelect.value) {
+            if (!keepBlank && yearSelect && typeof yearSelect.value !== 'undefined' && !yearSelect.value) {
                 yearSelect.value = String(currentYear);
             }
-            if (monthTop && !monthTop.value) monthTop.value = monthSelect.value;
-            if (yearTop && !yearTop.value) yearTop.value = yearSelect.value;
+            if (keepBlank) {
+                if (monthSelect) monthSelect.value = '';
+                if (yearSelect) yearSelect.value = '';
+                if (monthTop) monthTop.value = '';
+                if (yearTop) yearTop.value = '';
+            } else {
+                if (monthTop && !monthTop.value) monthTop.value = monthSelect.value;
+                if (yearTop && !yearTop.value) yearTop.value = yearSelect.value;
+            }
             if (typeof updatePrintInfo === 'function') updatePrintInfo();
         }
 
@@ -2945,39 +3434,82 @@ document.addEventListener('DOMContentLoaded', function(){
                             const yearTop = document.getElementById('targetYearTop');
                             if (!monthTop || !yearTop) return;
                             const key = `${yearTop.value}-${monthTop.value}`;
-                            const targets = JSON.parse(localStorage.getItem((getStorageKey('padiSawahTargets'))) || '{}');
+                            const targets = JSON.parse(getManagedStorageItem(getStorageKey('padiSawahTargets'), '{}') || '{}');
                             const t = targets[key] || {};
                             updatePrintInfo();
                         }
+            updateMonthlyTargetControlsState();
             const monthTop = document.getElementById('targetMonthTop');
             const yearTop = document.getElementById('targetYearTop');
             const monthFilter = document.getElementById('filterMonthSelect');
             const yearFilter = document.getElementById('filterYearSelect');
             if (!monthTop || !yearTop) return;
+
+            if (monthTop.__topTargetMonthHandler) {
+                monthTop.removeEventListener('change', monthTop.__topTargetMonthHandler);
+            }
+            if (yearTop.__topTargetYearHandler) {
+                yearTop.removeEventListener('change', yearTop.__topTargetYearHandler);
+            }
+
             // when top selects change, mirror to filter selects and re-render
-            monthTop.addEventListener('change', () => {
+            monthTop.__topTargetMonthHandler = () => {
                 if (monthFilter) monthFilter.value = monthTop.value;
                 if (yearFilter) yearFilter.value = yearTop.value;
                 loadLokasiTarget();
                 onFilterChange();
-            });
-            yearTop.addEventListener('change', () => {
+            };
+            yearTop.__topTargetYearHandler = () => {
                 if (monthFilter) monthFilter.value = monthTop.value;
                 if (yearFilter) yearFilter.value = yearTop.value;
                 loadLokasiTarget();
                 onFilterChange();
-            });
+            };
+            monthTop.addEventListener('change', monthTop.__topTargetMonthHandler);
+            yearTop.addEventListener('change', yearTop.__topTargetYearHandler);
+
             // Muat lokasi saat menu pertama kali dibuka
             loadLokasiTarget();
 
             // wire buttons
             const saveBtn = document.getElementById('saveTargetTop');
             const clearBtn = document.getElementById('clearTargetTop');
-            if (saveBtn) saveBtn.addEventListener('click', saveMonthlyTargetTop);
-            if (clearBtn) clearBtn.addEventListener('click', clearMonthlyTargetTop);
+            if (saveBtn && saveBtn.__saveTargetTopHandler) {
+                saveBtn.removeEventListener('click', saveBtn.__saveTargetTopHandler);
+            }
+            if (clearBtn && clearBtn.__clearTargetTopHandler) {
+                clearBtn.removeEventListener('click', clearBtn.__clearTargetTopHandler);
+            }
+            if (saveBtn) {
+                saveBtn.__saveTargetTopHandler = saveMonthlyTargetTop;
+                saveBtn.addEventListener('click', saveBtn.__saveTargetTopHandler);
+            }
+            if (clearBtn) {
+                clearBtn.__clearTargetTopHandler = clearMonthlyTargetTop;
+                clearBtn.addEventListener('click', clearBtn.__clearTargetTopHandler);
+            }
+        }
+
+        function updateMonthlyTargetControlsState() {
+            const hasDesa = hasActiveDesa();
+            const monthTop = document.getElementById('targetMonthTop');
+            const yearTop = document.getElementById('targetYearTop');
+            const panenInput = document.getElementById('monthlyTargetPanenTop');
+            const tanamInput = document.getElementById('monthlyTargetTanamTop');
+            const saveBtn = document.getElementById('saveTargetTop');
+            const clearBtn = document.getElementById('clearTargetTop');
+
+            if (monthTop) monthTop.disabled = !hasDesa;
+            if (yearTop) yearTop.disabled = !hasDesa;
+            if (panenInput) panenInput.disabled = !hasDesa;
+            if (tanamInput) tanamInput.disabled = !hasDesa;
+            if (saveBtn) saveBtn.disabled = !hasDesa;
+            if (clearBtn) clearBtn.disabled = !hasDesa;
         }
 
         function saveMonthlyTargetTop() {
+            if (!ensureActiveDesa('menyimpan target bulanan')) return;
+
             const monthTop = document.getElementById('targetMonthTop');
             const yearTop = document.getElementById('targetYearTop');
             const tPanen = parseFloat(document.getElementById('monthlyTargetPanenTop').value) || 0;
@@ -2986,10 +3518,11 @@ document.addEventListener('DOMContentLoaded', function(){
                 alert('Pilih bulan dan tahun terlebih dahulu.');
                 return;
             }
-            const key = `${yearTop.value}-${monthTop.value}`;
-            const targets = JSON.parse(localStorage.getItem(getStorageKey('padiSawahTargets')) || '{}');
-            targets[key] = { targetPanen: tPanen, targetTanam: tTanam };
-            localStorage.setItem(getStorageKey('padiSawahTargets'), JSON.stringify(targets));
+            const mm = String(monthTop.value).padStart(2, '0');
+            const key = `${yearTop.value}-${mm}`;
+            const targets = JSON.parse(getManagedStorageItem(getStorageKey('padiSawahTargets'), '{}') || '{}');
+            targets[key] = { targetPanen: Number(tPanen) || 0, targetTanam: Number(tTanam) || 0 };
+            safeSetStorageItem(getStorageKey('padiSawahTargets'), JSON.stringify(targets), 'target bulanan');
             alert('Target bulan disimpan.');
             // mirror to filter selects and inputs
             const monthFilter = document.getElementById('filterMonthSelect');
@@ -3000,6 +3533,8 @@ document.addEventListener('DOMContentLoaded', function(){
         }
 
         function clearMonthlyTargetTop() {
+            if (!ensureActiveDesa('menghapus target bulanan')) return;
+
             const monthTop = document.getElementById('targetMonthTop');
             const yearTop = document.getElementById('targetYearTop');
             if (!monthTop || !yearTop || !monthTop.value || !yearTop.value) {
@@ -3007,10 +3542,10 @@ document.addEventListener('DOMContentLoaded', function(){
                 return;
             }
             const key = `${yearTop.value}-${monthTop.value}`;
-            const targets = JSON.parse(localStorage.getItem(getStorageKey('padiSawahTargets')) || '{}');
+            const targets = JSON.parse(getManagedStorageItem(getStorageKey('padiSawahTargets'), '{}') || '{}');
             if (targets[key]) {
                 delete targets[key];
-                localStorage.setItem(getStorageKey('padiSawahTargets'), JSON.stringify(targets));
+                safeSetStorageItem(getStorageKey('padiSawahTargets'), JSON.stringify(targets), 'target bulanan');
             }
             document.getElementById('monthlyTargetPanenTop').value = '';
             document.getElementById('monthlyTargetTanamTop').value = '';
@@ -3280,55 +3815,9 @@ document.addEventListener('DOMContentLoaded', function(){
         }
 
         // Monthly targets storage: key padiSawahTargets -> { 'YYYY-MM': { targetPanen, targetTanam } }
-        function saveMonthlyTarget() {
-            const month = document.getElementById('filterMonthSelect');
-            const year = document.getElementById('filterYearSelect');
-            const fp = document.getElementById('filterTargetPanen');
-            const ft = document.getElementById('filterTargetTanam');
-            const tp = document.getElementById('monthlyTargetPanenTop');
-            const tt = document.getElementById('monthlyTargetTanamTop');
-            const tPanen = parseFloat((fp && fp.value) || (tp && tp.value) || 0) || 0;
-            const tTanam = parseFloat((ft && ft.value) || (tt && tt.value) || 0) || 0;
-            if (!month || !year || !month.value || !year.value) {
-                alert('Pilih bulan dan tahun terlebih dahulu.');
-                return;
-            }
-            const key = `${year.value}-${month.value}`;
-            const targets = JSON.parse(localStorage.getItem((getStorageKey('padiSawahTargets'))) || '{}');
-            targets[key] = { targetPanen: tPanen, targetTanam: tTanam };
-            localStorage.setItem((getStorageKey('padiSawahTargets')), JSON.stringify(targets));
-            alert('Target bulan disimpan.');
-            renderTable();
-        }
-
-        function clearMonthlyTarget() {
-            const month = document.getElementById('filterMonthSelect');
-            const year = document.getElementById('filterYearSelect');
-            if (!month || !year || !month.value || !year.value) {
-                alert('Pilih bulan dan tahun terlebih dahulu.');
-                return;
-            }
-            const key = `${year.value}-${month.value}`;
-            const targets = JSON.parse(localStorage.getItem((getStorageKey('padiSawahTargets'))) || '{}');
-            if (targets[key]) {
-                delete targets[key];
-                localStorage.setItem((getStorageKey('padiSawahTargets')), JSON.stringify(targets));
-            }
-            const fp = document.getElementById('filterTargetPanen');
-            const ft = document.getElementById('filterTargetTanam');
-            const tp = document.getElementById('monthlyTargetPanenTop');
-            const tt = document.getElementById('monthlyTargetTanamTop');
-            if (fp) fp.value = '';
-            if (ft) ft.value = '';
-            if (tp) tp.value = '';
-            if (tt) tt.value = '';
-            alert('Target bulan direset.');
-            renderTable();
-        }
-
         function loadMonthlyTarget(year, month) {
             const key = `${year}-${String(month).padStart(2,'0')}`;
-            const targets = JSON.parse(localStorage.getItem((getStorageKey('padiSawahTargets'))) || '{}');
+            const targets = JSON.parse(getManagedStorageItem(getStorageKey('padiSawahTargets'), '{}') || '{}');
             return targets[key] || { targetPanen: 0, targetTanam: 0 };
         }
 
@@ -3493,8 +3982,45 @@ document.addEventListener('DOMContentLoaded', function(){
             if (dropdown) dropdown.style.display = 'none';
         }
 
+        function exportLibrariesReady() {
+            return typeof window.jspdf !== 'undefined' && !!window.jspdf.jsPDF && typeof window.XLSX !== 'undefined';
+        }
+
+        function updateOfflineStatusBanner() {
+            const banner = document.getElementById('offlineStatusBanner');
+            const exportButtons = [
+                document.getElementById('exportDataBtn'),
+                document.getElementById('exportPdfBtn')
+            ].filter(Boolean);
+            const libraryMissing = !exportLibrariesReady();
+            const offline = typeof navigator !== 'undefined' && navigator.onLine === false;
+
+            if (banner) {
+                banner.style.display = (offline || libraryMissing) ? 'block' : 'none';
+                banner.textContent = offline
+                    ? 'Mode offline aktif. Data lokal tetap bisa dipakai, tetapi fitur ekspor PDF/Excel memerlukan koneksi saat library eksternal belum tersedia.'
+                    : 'Sebagian library eksternal belum dimuat. Data lokal tetap bisa dipakai, tetapi fitur ekspor PDF/Excel belum tersedia.';
+            }
+
+            exportButtons.forEach((button) => {
+                button.disabled = libraryMissing;
+                button.title = libraryMissing
+                    ? 'Fitur ekspor belum tersedia karena library PDF/Excel belum dimuat.'
+                    : '';
+            });
+        }
+
+        window.addEventListener('online', updateOfflineStatusBanner);
+        window.addEventListener('offline', updateOfflineStatusBanner);
+        document.addEventListener('DOMContentLoaded', updateOfflineStatusBanner);
+
         // --- EXPORT TO EXCEL ---
         function exportToExcel() {
+            if (typeof window.XLSX === 'undefined') {
+                alert('Fitur ekspor Excel belum tersedia karena library XLSX belum dimuat.');
+                updateOfflineStatusBanner();
+                return;
+            }
                         // Data untuk ekspor ke Excel/CSV
                         let csvRows = [];
             // ...existing code...
@@ -3628,6 +4154,11 @@ document.addEventListener('DOMContentLoaded', function(){
 
         // --- EXPORT TO PDF ---
         function exportToPDF() {
+            if (typeof window.jspdf === 'undefined' || !window.jspdf.jsPDF) {
+                alert('Fitur ekspor PDF belum tersedia karena library jsPDF belum dimuat.');
+                updateOfflineStatusBanner();
+                return;
+            }
             const monthSel = document.getElementById('filterMonthSelect');
             const yearSel = document.getElementById('filterYearSelect');
             if (!(monthSel && yearSel && monthSel.value && yearSel.value)) {
@@ -3741,8 +4272,16 @@ document.addEventListener('DOMContentLoaded', function(){
             // Timeline muncul otomatis saat inisialisasi
             renderTimelineList();
             // Timeline update otomatis saat filter berubah
-            monthSel.addEventListener('change', renderTimelineList);
-            yearSel.addEventListener('change', renderTimelineList);
+            if (monthSel.__timelineChangeHandler) {
+                monthSel.removeEventListener('change', monthSel.__timelineChangeHandler);
+            }
+            if (yearSel.__timelineChangeHandler) {
+                yearSel.removeEventListener('change', yearSel.__timelineChangeHandler);
+            }
+            monthSel.__timelineChangeHandler = renderTimelineList;
+            yearSel.__timelineChangeHandler = renderTimelineList;
+            monthSel.addEventListener('change', monthSel.__timelineChangeHandler);
+            yearSel.addEventListener('change', yearSel.__timelineChangeHandler);
         }
 
         function renderTimelineList() {
